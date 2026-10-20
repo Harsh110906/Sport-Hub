@@ -28,7 +28,7 @@ public class PlayerFitnessListActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
     private SessionManager sessionManager;
     private ListView lvFitness;
-    private TextView tvEmptyState, tvTotalWorkouts, tvTotalMinutes;
+    private TextView tvEmptyState, tvTotalWorkouts, tvTotalMinutes, tvTotalCalories;
     private List<FitnessRecord> recordList;
     private int localUserId = -1;
 
@@ -74,6 +74,7 @@ public class PlayerFitnessListActivity extends AppCompatActivity {
 
         tvTotalWorkouts = findViewById(R.id.tvTotalWorkouts);
         tvTotalMinutes = findViewById(R.id.tvTotalMinutes);
+        tvTotalCalories = findViewById(R.id.tvTotalCalories);
         tvEmptyState = findViewById(R.id.tvFitnessEmptyState);
         lvFitness = findViewById(R.id.lvPlayerFitness);
         FloatingActionButton fabAddFitness = findViewById(R.id.fabAddFitness);
@@ -105,12 +106,21 @@ public class PlayerFitnessListActivity extends AppCompatActivity {
         recordList = dbHelper.getFitnessRecordsByUserId(localUserId);
         
         int totalMins = 0;
+        double totalCals = 0.0;
         for (FitnessRecord r : recordList) {
             totalMins += r.getDurationMinutes();
+            totalCals += r.getCaloriesBurned();
         }
 
         tvTotalWorkouts.setText(String.valueOf(recordList.size()));
         tvTotalMinutes.setText(String.valueOf(totalMins));
+        
+        // Format to remove decimal if it's a whole number, otherwise show up to 1 decimal place
+        if (totalCals == (long) totalCals) {
+            tvTotalCalories.setText(String.format(java.util.Locale.US, "%d", (long) totalCals));
+        } else {
+            tvTotalCalories.setText(String.format(java.util.Locale.US, "%.1f", totalCals));
+        }
 
         if (recordList.isEmpty()) {
             tvEmptyState.setVisibility(View.VISIBLE);
