@@ -19,22 +19,24 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="16dp">
 
+            <!-- Greeting Section -->
             <TextView
                 android:id="@+id/tvWelcome"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Welcome!"
-                android:textColor="@color/primary"
-                android:textSize="24sp"
+                android:textColor="@color/primary_dark"
+                android:textSize="28sp"
                 android:textStyle="bold"
+                android:layout_marginTop="8dp"
                 android:layout_marginBottom="4dp" />
 
             <TextView
@@ -42,10 +44,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Role: Unknown"
-                android:textColor="@color/secondary"
+                android:textColor="@color/text_secondary"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:layout_marginBottom="24dp" />
+                android:layout_marginBottom="32dp" />
 
             <!-- Admin Dashboard Cards -->
             <LinearLayout
@@ -54,6 +56,16 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Management Tools"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary_dark"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="12dp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -67,7 +79,7 @@
                         android:layout_height="120dp"
                         android:layout_weight="1"
                         android:layout_margin="8dp"
-                        app:cardCornerRadius="8dp"
+                        app:cardCornerRadius="12dp"
                         app:cardElevation="4dp">
                         <TextView
                             android:layout_width="match_parent"
@@ -75,7 +87,11 @@
                             android:gravity="center"
                             android:text="@string/title_admin_tournaments"
                             android:textColor="@color/text_primary"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:drawableTop="@android:drawable/ic_menu_sort_by_size"
+                            app:drawableTint="@color/primary"
+                            android:drawablePadding="8dp"
+                            android:paddingTop="24dp"/>
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
@@ -84,7 +100,7 @@
                         android:layout_height="120dp"
                         android:layout_weight="1"
                         android:layout_margin="8dp"
-                        app:cardCornerRadius="8dp"
+                        app:cardCornerRadius="12dp"
                         app:cardElevation="4dp">
                         <TextView
                             android:layout_width="match_parent"
@@ -92,7 +108,11 @@
                             android:gravity="center"
                             android:text="@string/title_admin_teams"
                             android:textColor="@color/text_primary"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:drawableTop="@android:drawable/ic_menu_myplaces"
+                            app:drawableTint="@color/primary"
+                            android:drawablePadding="8dp"
+                            android:paddingTop="24dp"/>
                     </androidx.cardview.widget.CardView>
                 </LinearLayout>
 
@@ -108,7 +128,7 @@
                         android:layout_height="120dp"
                         android:layout_weight="1"
                         android:layout_margin="8dp"
-                        app:cardCornerRadius="8dp"
+                        app:cardCornerRadius="12dp"
                         app:cardElevation="4dp">
                         <TextView
                             android:layout_width="match_parent"
@@ -116,7 +136,11 @@
                             android:gravity="center"
                             android:text="@string/title_admin_matches"
                             android:textColor="@color/text_primary"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:drawableTop="@android:drawable/ic_menu_today"
+                            app:drawableTint="@color/primary"
+                            android:drawablePadding="8dp"
+                            android:paddingTop="24dp"/>
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
@@ -125,7 +149,7 @@
                         android:layout_height="120dp"
                         android:layout_weight="1"
                         android:layout_margin="8dp"
-                        app:cardCornerRadius="8dp"
+                        app:cardCornerRadius="12dp"
                         app:cardElevation="4dp">
                         <TextView
                             android:layout_width="match_parent"
@@ -133,7 +157,11 @@
                             android:gravity="center"
                             android:text="@string/title_admin_events"
                             android:textColor="@color/text_primary"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:drawableTop="@android:drawable/ic_menu_compass"
+                            app:drawableTint="@color/primary"
+                            android:drawablePadding="8dp"
+                            android:paddingTop="24dp"/>
                     </androidx.cardview.widget.CardView>
                 </LinearLayout>
             </LinearLayout>
@@ -145,6 +173,49 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="My Hub"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary_dark"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Player My Registrations (Prominent Primary Card) -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardPlayerRegistrations"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_margin="8dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="@color/primary">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@android:drawable/ic_menu_save"
+                            app:tint="@color/white"
+                            android:layout_marginEnd="12dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="My Registrations"
+                            android:textColor="@color/white"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -158,7 +229,7 @@
                         android:layout_height="120dp"
                         android:layout_weight="1"
                         android:layout_margin="8dp"
-                        app:cardCornerRadius="8dp"
+                        app:cardCornerRadius="12dp"
                         app:cardElevation="4dp">
                         <TextView
                             android:layout_width="match_parent"
@@ -166,7 +237,11 @@
                             android:gravity="center"
                             android:text="@string/title_tournaments"
                             android:textColor="@color/text_primary"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:drawableTop="@android:drawable/ic_menu_sort_by_size"
+                            app:drawableTint="@color/primary"
+                            android:drawablePadding="8dp"
+                            android:paddingTop="24dp"/>
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
@@ -175,7 +250,7 @@
                         android:layout_height="120dp"
                         android:layout_weight="1"
                         android:layout_margin="8dp"
-                        app:cardCornerRadius="8dp"
+                        app:cardCornerRadius="12dp"
                         app:cardElevation="4dp">
                         <TextView
                             android:layout_width="match_parent"
@@ -183,7 +258,11 @@
                             android:gravity="center"
                             android:text="@string/title_matches"
                             android:textColor="@color/text_primary"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:drawableTop="@android:drawable/ic_menu_today"
+                            app:drawableTint="@color/primary"
+                            android:drawablePadding="8dp"
+                            android:paddingTop="24dp"/>
                     </androidx.cardview.widget.CardView>
                 </LinearLayout>
 
@@ -199,7 +278,7 @@
                         android:layout_height="120dp"
                         android:layout_weight="1"
                         android:layout_margin="8dp"
-                        app:cardCornerRadius="8dp"
+                        app:cardCornerRadius="12dp"
                         app:cardElevation="4dp">
                         <TextView
                             android:layout_width="match_parent"
@@ -207,7 +286,11 @@
                             android:gravity="center"
                             android:text="@string/title_events"
                             android:textColor="@color/text_primary"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:drawableTop="@android:drawable/ic_menu_compass"
+                            app:drawableTint="@color/primary"
+                            android:drawablePadding="8dp"
+                            android:paddingTop="24dp"/>
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
@@ -216,7 +299,7 @@
                         android:layout_height="120dp"
                         android:layout_weight="1"
                         android:layout_margin="8dp"
-                        app:cardCornerRadius="8dp"
+                        app:cardCornerRadius="12dp"
                         app:cardElevation="4dp">
                         <TextView
                             android:layout_width="match_parent"
@@ -224,41 +307,44 @@
                             android:gravity="center"
                             android:text="@string/title_fitness"
                             android:textColor="@color/text_primary"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:drawableTop="@android:drawable/ic_menu_directions"
+                            app:drawableTint="@color/primary"
+                            android:drawablePadding="8dp"
+                            android:paddingTop="24dp"/>
                     </androidx.cardview.widget.CardView>
                 </LinearLayout>
 
-                <!-- Player Workout Plan (Full Width) -->
+                <!-- Player Workout Plan (Full Width Secondary) -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardPlayerWorkout"
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
                     android:layout_margin="8dp"
-                    app:cardCornerRadius="8dp"
+                    app:cardCornerRadius="12dp"
                     app:cardElevation="4dp">
-                    <TextView
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:text="@string/title_workouts"
-                        android:textColor="@color/text_primary"
-                        android:textStyle="bold" />
-                </androidx.cardview.widget.CardView>
-                <!-- Player My Registrations (Full Width) -->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardPlayerRegistrations"
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:layout_margin="8dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="My Registrations"
-                        android:textColor="@color/text_primary"
-                        android:textStyle="bold" />
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@android:drawable/ic_menu_edit"
+                            app:tint="@color/primary"
+                            android:layout_marginEnd="12dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_workouts"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold"
+                            android:textSize="16sp" />
+                    </LinearLayout>
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
 
@@ -268,16 +354,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:layout_margin="8dp"
-                app:cardCornerRadius="8dp"
+                android:layout_marginTop="24dp"
+                app:cardCornerRadius="12dp"
                 app:cardElevation="4dp">
-                <TextView
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="@string/title_profile"
-                    android:textColor="@color/text_primary"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@android:drawable/ic_menu_info_details"
+                        app:tint="@color/secondary"
+                        android:layout_marginEnd="12dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/title_profile"
+                        android:textColor="@color/text_primary"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
             </androidx.cardview.widget.CardView>
 
         </LinearLayout>
