@@ -694,8 +694,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COL_MATCH_DATE, m.getMatchDate());
         values.put(COL_MATCH_VENUE, m.getVenue());
         values.put(COL_MATCH_STATUS, m.getStatus());
-        values.put(COL_MATCH_SCORE_A, m.getScoreA());
-        values.put(COL_MATCH_SCORE_B, m.getScoreB());
+        
+        if (m.getScoreA() != null) {
+            values.put(COL_MATCH_SCORE_A, m.getScoreA());
+        } else {
+            values.putNull(COL_MATCH_SCORE_A);
+        }
+        
+        if (m.getScoreB() != null) {
+            values.put(COL_MATCH_SCORE_B, m.getScoreB());
+        } else {
+            values.putNull(COL_MATCH_SCORE_B);
+        }
+        
         long id = db.insert(TABLE_MATCHES, null, values);
         db.close();
         return id;
@@ -724,8 +735,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 m.setMatchDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_MATCH_DATE)));
                 m.setVenue(cursor.getString(cursor.getColumnIndexOrThrow(COL_MATCH_VENUE)));
                 m.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(COL_MATCH_STATUS)));
-                m.setScoreA(cursor.getInt(cursor.getColumnIndexOrThrow(COL_MATCH_SCORE_A)));
-                m.setScoreB(cursor.getInt(cursor.getColumnIndexOrThrow(COL_MATCH_SCORE_B)));
+                
+                int scoreAIndex = cursor.getColumnIndexOrThrow(COL_MATCH_SCORE_A);
+                if (!cursor.isNull(scoreAIndex)) {
+                    m.setScoreA(cursor.getInt(scoreAIndex));
+                }
+                
+                int scoreBIndex = cursor.getColumnIndexOrThrow(COL_MATCH_SCORE_B);
+                if (!cursor.isNull(scoreBIndex)) {
+                    m.setScoreB(cursor.getInt(scoreBIndex));
+                }
                 
                 m.setTeamAName(cursor.getString(cursor.getColumnIndexOrThrow("teamA_name")));
                 m.setTeamBName(cursor.getString(cursor.getColumnIndexOrThrow("teamB_name")));
@@ -747,8 +766,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COL_MATCH_DATE, m.getMatchDate());
         values.put(COL_MATCH_VENUE, m.getVenue());
         values.put(COL_MATCH_STATUS, m.getStatus());
-        values.put(COL_MATCH_SCORE_A, m.getScoreA());
-        values.put(COL_MATCH_SCORE_B, m.getScoreB());
+        
+        if (m.getScoreA() != null) {
+            values.put(COL_MATCH_SCORE_A, m.getScoreA());
+        } else {
+            values.putNull(COL_MATCH_SCORE_A);
+        }
+        
+        if (m.getScoreB() != null) {
+            values.put(COL_MATCH_SCORE_B, m.getScoreB());
+        } else {
+            values.putNull(COL_MATCH_SCORE_B);
+        }
+        
         int rows = db.update(TABLE_MATCHES, values, COL_MATCH_ID + "=?", new String[]{String.valueOf(m.getId())});
         db.close();
         return rows;

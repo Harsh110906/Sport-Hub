@@ -8,8 +8,8 @@ public class Match {
     private String matchDate;
     private String venue;
     private String status;
-    private int scoreA;
-    private int scoreB;
+    private Integer scoreA;
+    private Integer scoreB;
 
     // Transient fields for display purposes
     private String teamAName;
@@ -39,11 +39,11 @@ public class Match {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    public int getScoreA() { return scoreA; }
-    public void setScoreA(int scoreA) { this.scoreA = scoreA; }
+    public Integer getScoreA() { return scoreA; }
+    public void setScoreA(Integer scoreA) { this.scoreA = scoreA; }
 
-    public int getScoreB() { return scoreB; }
-    public void setScoreB(int scoreB) { this.scoreB = scoreB; }
+    public Integer getScoreB() { return scoreB; }
+    public void setScoreB(Integer scoreB) { this.scoreB = scoreB; }
 
     public String getTeamAName() { return teamAName; }
     public void setTeamAName(String teamAName) { this.teamAName = teamAName; }

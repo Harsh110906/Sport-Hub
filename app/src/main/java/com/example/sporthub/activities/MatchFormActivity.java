@@ -92,20 +92,6 @@ public class MatchFormActivity extends AppCompatActivity {
         ArrayAdapter<String> statusAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, statuses);
         spnStatus.setAdapter(statusAdapter);
 
-        // Toggle Score visibility
-        spnStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if ("Completed".equalsIgnoreCase(statuses[position])) {
-                    layoutScores.setVisibility(View.VISIBLE);
-                } else {
-                    layoutScores.setVisibility(View.GONE);
-                }
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
-
         tvDate.setOnClickListener(v -> showDatePicker(tvDate));
 
         btnSave.setOnClickListener(v -> saveMatch());
@@ -211,9 +197,16 @@ public class MatchFormActivity extends AppCompatActivity {
                 }
             }
             
-            if ("Completed".equalsIgnoreCase(matchToEdit.getStatus())) {
+            if (matchToEdit.getScoreA() != null) {
                 etScoreA.setText(String.valueOf(matchToEdit.getScoreA()));
+            } else {
+                etScoreA.setText("");
+            }
+            
+            if (matchToEdit.getScoreB() != null) {
                 etScoreB.setText(String.valueOf(matchToEdit.getScoreB()));
+            } else {
+                etScoreB.setText("");
             }
 
             isInitialLoad = false;
@@ -244,16 +237,41 @@ public class MatchFormActivity extends AppCompatActivity {
             return;
         }
 
-        int scoreA = 0;
-        int scoreB = 0;
-        if ("Completed".equalsIgnoreCase(status)) {
+        Integer scoreA = null;
+        Integer scoreB = null;
+        
+        String strScoreA = etScoreA.getText().toString().trim();
+        String strScoreB = etScoreB.getText().toString().trim();
+
+        if (!TextUtils.isEmpty(strScoreA)) {
             try {
-                scoreA = Integer.parseInt(etScoreA.getText().toString().trim());
-                scoreB = Integer.parseInt(etScoreB.getText().toString().trim());
+                scoreA = Integer.parseInt(strScoreA);
+                if (scoreA < 0) {
+                    etScoreA.setError("Must be non-negative");
+                    return;
+                }
             } catch (NumberFormatException e) {
-                Toast.makeText(this, "Scores must be valid numbers for Completed matches.", Toast.LENGTH_SHORT).show();
+                etScoreA.setError("Invalid number");
                 return;
             }
+        }
+
+        if (!TextUtils.isEmpty(strScoreB)) {
+            try {
+                scoreB = Integer.parseInt(strScoreB);
+                if (scoreB < 0) {
+                    etScoreB.setError("Must be non-negative");
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                etScoreB.setError("Invalid number");
+                return;
+            }
+        }
+
+        if ("Completed".equalsIgnoreCase(status) && (scoreA == null || scoreB == null)) {
+            Toast.makeText(this, "Scores must be provided for Completed matches.", Toast.LENGTH_SHORT).show();
+            return;
         }
 
         btnSave.setEnabled(false);

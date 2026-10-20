@@ -101,14 +101,13 @@
                 android:background="@android:drawable/btn_dropdown"
                 android:layout_marginBottom="16dp"/>
 
-            <!-- Scores visible only if status is Completed -->
+            <!-- Scores are always visible so they can be edited without forcing 'Completed' status -->
             <LinearLayout
                 android:id="@+id/layoutScores"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="24dp"
-                android:visibility="gone">
+                android:layout_marginBottom="24dp">
 
                 <EditText
                     android:id="@+id/etScoreA"
