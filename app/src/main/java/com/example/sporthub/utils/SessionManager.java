@@ -40,6 +40,11 @@ public class SessionManager {
         return pref.getString(KEY_NAME, "User");
     }
 
+    public void updateSessionName(String newName) {
+        editor.putString(KEY_NAME, newName);
+        editor.apply();
+    }
+
     public String getFirebaseUid() {
         return pref.getString(KEY_UID, null);
     }

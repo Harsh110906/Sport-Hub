@@ -263,6 +263,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return null;
     }
 
+    public boolean updateUserProfile(int localUserId, String newName, String newFavSport) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_NAME, newName);
+        values.put(COLUMN_FAV_SPORT, newFavSport);
+        
+        int rows = db.update(TABLE_USERS, values, COLUMN_ID + "=?", new String[]{String.valueOf(localUserId)});
+        db.close();
+        return rows > 0;
+    }
+
     // ==========================================
     // TOURNAMENTS CRUD (Phase 4)
     // ==========================================

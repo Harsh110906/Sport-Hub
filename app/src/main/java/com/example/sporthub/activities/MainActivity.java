@@ -83,7 +83,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Shared Profile listener
-        findViewById(R.id.cardSharedProfile).setOnClickListener(v -> showComingSoonDialog("My Profile"));
+        findViewById(R.id.cardSharedProfile).setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+        });
     }
 
     private void setupAdminListeners() {
