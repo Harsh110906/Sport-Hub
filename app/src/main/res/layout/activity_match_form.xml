@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarMatchForm"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:titleTextColor="@color/white" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Tournament: *"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="4dp"/>
+
+            <Spinner
+                android:id="@+id/spnMatchTournament"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/btn_dropdown"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Team A: *"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="4dp"/>
+
+            <Spinner
+                android:id="@+id/spnTeamA"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/btn_dropdown"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Team B: *"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="4dp"/>
+
+            <Spinner
+                android:id="@+id/spnTeamB"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/btn_dropdown"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/tvMatchDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Match Date (YYYY-MM-DD) *"
+                android:padding="12dp"
+                android:background="@android:drawable/edit_text"
+                android:clickable="true"
+                android:focusable="false"
+                android:layout_marginBottom="12dp"/>
+
+            <EditText
+                android:id="@+id/etMatchVenue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Venue *"
+                android:background="@android:drawable/edit_text"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Status:"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="4dp"/>
+
+            <Spinner
+                android:id="@+id/spnMatchStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/btn_dropdown"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Scores visible only if status is Completed -->
+            <LinearLayout
+                android:id="@+id/layoutScores"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/etScoreA"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Score A"
+                    android:inputType="number"
+                    android:background="@android:drawable/edit_text"
+                    android:padding="12dp"
+                    android:layout_marginEnd="4dp" />
+
+                <EditText
+                    android:id="@+id/etScoreB"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Score B"
+                    android:inputType="number"
+                    android:background="@android:drawable/edit_text"
+                    android:padding="12dp"
+                    android:layout_marginStart="4dp" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnSaveMatch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save Match"
+                android:backgroundTint="@color/primary"
+                android:textColor="@color/white"
+                android:padding="12dp"
+                android:layout_marginBottom="12dp"/>
+
+            <Button
+                android:id="@+id/btnDeleteMatch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Delete Match"
+                android:backgroundTint="@android:color/holo_red_dark"
+                android:textColor="@color/white"
+                android:padding="12dp"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

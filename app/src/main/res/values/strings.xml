@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">SPORTS HUB</string>
+    <string name="tagline">Tournaments, Fitness &amp; Events</string>
+
+    <string name="title_tournaments">Browse Tournaments</string>
+    <string name="title_matches">Match Schedules</string>
+    <string name="title_events">Sports Events</string>
+    <string name="title_fitness">Fitness Tracker</string>
+    <string name="title_workouts">Workout Planner</string>
+    <string name="title_profile">My Profile</string>
+
+    <string name="title_admin_tournaments">Manage Tournaments</string>
+    <string name="title_admin_teams">Teams &amp; Players</string>
+    <string name="title_admin_matches">Schedule Matches</string>
+    <string name="title_admin_events">Manage Events</string>
+
+    <string name="action_logout">Logout</string>
+</resources>
