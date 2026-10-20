@@ -34,12 +34,22 @@ public class WorkoutAdapter extends ArrayAdapter<WorkoutPlan> {
         TextView tvActivity = convertView.findViewById(R.id.tvWorkoutActivity);
         TextView tvDuration = convertView.findViewById(R.id.tvWorkoutDuration);
         TextView tvDate = convertView.findViewById(R.id.tvWorkoutDate);
+        TextView tvStatus = convertView.findViewById(R.id.tvWorkoutStatus);
 
         if (plan != null) {
             tvTitle.setText(plan.getTitle());
             tvActivity.setText(plan.getActivityType());
             tvDuration.setText(plan.getTargetDuration() + " mins");
             tvDate.setText("Planned for: " + plan.getPlannedDate());
+            
+            String status = plan.getStatus();
+            if (status != null && status.equalsIgnoreCase("Completed")) {
+                tvStatus.setText("✓ " + status);
+                tvStatus.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
+            } else {
+                tvStatus.setText(status != null ? status : "Planned");
+                tvStatus.setTextColor(getContext().getResources().getColor(R.color.text_secondary));
+            }
         }
 
         return convertView;

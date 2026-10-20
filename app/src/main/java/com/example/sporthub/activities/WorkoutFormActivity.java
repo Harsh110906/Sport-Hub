@@ -28,7 +28,7 @@ import java.util.Locale;
 public class WorkoutFormActivity extends AppCompatActivity {
 
     private EditText etTitle, etDuration, etNotes;
-    private Spinner spnActivity;
+    private Spinner spnActivity, spnStatus;
     private TextView tvDate;
     private Button btnSave, btnDelete;
     
@@ -58,6 +58,7 @@ public class WorkoutFormActivity extends AppCompatActivity {
 
         etTitle = findViewById(R.id.etWorkoutTitle);
         spnActivity = findViewById(R.id.spnWorkoutActivity);
+        spnStatus = findViewById(R.id.spnWorkoutStatus);
         tvDate = findViewById(R.id.tvWorkoutDate);
         etDuration = findViewById(R.id.etWorkoutDuration);
         etNotes = findViewById(R.id.etWorkoutNotes);
@@ -68,6 +69,11 @@ public class WorkoutFormActivity extends AppCompatActivity {
         String[] activities = {"Running", "Cycling", "Swimming", "Weightlifting", "Yoga", "Walking", "Other"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, activities);
         spnActivity.setAdapter(adapter);
+        
+        // Status list
+        String[] statuses = {"Planned", "Completed"};
+        ArrayAdapter<String> statusAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, statuses);
+        spnStatus.setAdapter(statusAdapter);
 
         tvDate.setOnClickListener(v -> showDatePicker());
 
@@ -120,6 +126,13 @@ public class WorkoutFormActivity extends AppCompatActivity {
                     break;
                 }
             }
+            
+            for (int i = 0; i < spnStatus.getCount(); i++) {
+                if (spnStatus.getItemAtPosition(i).toString().equalsIgnoreCase(wp.getStatus())) {
+                    spnStatus.setSelection(i);
+                    break;
+                }
+            }
         } else {
             Toast.makeText(this, "Plan not found or access denied.", Toast.LENGTH_SHORT).show();
             finish();
@@ -132,6 +145,7 @@ public class WorkoutFormActivity extends AppCompatActivity {
         String durationStr = etDuration.getText().toString().trim();
         String notes = etNotes.getText().toString().trim();
         String activityType = spnActivity.getSelectedItem().toString();
+        String status = spnStatus.getSelectedItem().toString();
 
         if (TextUtils.isEmpty(title) || TextUtils.isEmpty(date) || TextUtils.isEmpty(durationStr)) {
             Toast.makeText(this, "Title, Date, and Duration are required.", Toast.LENGTH_SHORT).show();
@@ -160,6 +174,7 @@ public class WorkoutFormActivity extends AppCompatActivity {
         wp.setTargetDuration(duration);
         wp.setPlannedDate(date);
         wp.setNotes(notes);
+        wp.setStatus(status);
 
         if (planId == -1) {
             long result = dbHelper.addWorkoutPlan(wp);

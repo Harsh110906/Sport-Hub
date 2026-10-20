@@ -44,12 +44,27 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tvWorkoutDate"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textColor="@color/text_secondary"
-            android:textSize="12sp" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvWorkoutDate"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tvWorkoutStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
+                android:textStyle="italic"
+                android:textSize="12sp" />
+        </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

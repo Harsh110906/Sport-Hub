@@ -16,7 +16,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "SportHub.db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     // Users Table (Existing)
     private static final String TABLE_USERS = "users";
@@ -97,6 +97,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COL_WORKOUT_DATE = "planned_date";
     private static final String COL_WORKOUT_DURATION = "target_duration";
     private static final String COL_WORKOUT_NOTES = "notes";
+    private static final String COL_WORKOUT_STATUS = "status";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -136,6 +137,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (oldVersion < 4) {
             createPhase10Tables(db);
         }
+        if (oldVersion < 5) {
+            db.execSQL("ALTER TABLE " + TABLE_WORKOUTS + " ADD COLUMN " + COL_WORKOUT_STATUS + " TEXT DEFAULT 'Planned'");
+        }
     }
 
     private void createPhase10Tables(SQLiteDatabase db) {
@@ -147,6 +151,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COL_WORKOUT_DATE + " TEXT NOT NULL,"
                 + COL_WORKOUT_DURATION + " INTEGER,"
                 + COL_WORKOUT_NOTES + " TEXT,"
+                + COL_WORKOUT_STATUS + " TEXT DEFAULT 'Planned',"
                 + "FOREIGN KEY(" + COL_WORKOUT_UID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_ID + "))";
         db.execSQL(CREATE_WORKOUTS);
     }
@@ -896,6 +901,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COL_WORKOUT_DATE, wp.getPlannedDate());
         values.put(COL_WORKOUT_DURATION, wp.getTargetDuration());
         values.put(COL_WORKOUT_NOTES, wp.getNotes());
+        values.put(COL_WORKOUT_STATUS, wp.getStatus());
         long id = db.insert(TABLE_WORKOUTS, null, values);
         db.close();
         return id;
@@ -916,6 +922,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 wp.setPlannedDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_WORKOUT_DATE)));
                 wp.setTargetDuration(cursor.getInt(cursor.getColumnIndexOrThrow(COL_WORKOUT_DURATION)));
                 wp.setNotes(cursor.getString(cursor.getColumnIndexOrThrow(COL_WORKOUT_NOTES)));
+                
+                int statusIndex = cursor.getColumnIndex(COL_WORKOUT_STATUS);
+                if (statusIndex != -1 && !cursor.isNull(statusIndex)) {
+                    wp.setStatus(cursor.getString(statusIndex));
+                } else {
+                    wp.setStatus("Planned"); // Fallback
+                }
+                
                 list.add(wp);
             } while (cursor.moveToNext());
         }
@@ -939,6 +953,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             wp.setPlannedDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_WORKOUT_DATE)));
             wp.setTargetDuration(cursor.getInt(cursor.getColumnIndexOrThrow(COL_WORKOUT_DURATION)));
             wp.setNotes(cursor.getString(cursor.getColumnIndexOrThrow(COL_WORKOUT_NOTES)));
+            
+            int statusIndex = cursor.getColumnIndex(COL_WORKOUT_STATUS);
+            if (statusIndex != -1 && !cursor.isNull(statusIndex)) {
+                wp.setStatus(cursor.getString(statusIndex));
+            } else {
+                wp.setStatus("Planned");
+            }
+            
             cursor.close();
             return wp;
         }
@@ -954,6 +976,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COL_WORKOUT_DATE, wp.getPlannedDate());
         values.put(COL_WORKOUT_DURATION, wp.getTargetDuration());
         values.put(COL_WORKOUT_NOTES, wp.getNotes());
+        values.put(COL_WORKOUT_STATUS, wp.getStatus());
         
         int rows = db.update(TABLE_WORKOUTS, values, 
                 COL_WORKOUT_ID + "=? AND " + COL_WORKOUT_UID + "=?", 

@@ -8,6 +8,7 @@ public class WorkoutPlan {
     private String plannedDate;
     private int targetDuration;
     private String notes;
+    private String status;
 
     public WorkoutPlan() {}
 
@@ -31,4 +32,7 @@ public class WorkoutPlan {
 
     public String getNotes() { return notes; }
     public void setNotes(String notes) { this.notes = notes; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }
