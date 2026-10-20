@@ -387,6 +387,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final int REGISTRATION_DUPLICATE = -1;
     public static final int REGISTRATION_INELIGIBLE = -2;
     public static final int REGISTRATION_ERROR = -3;
+    
+    public static final int CANCEL_SUCCESS = 1;
+    public static final int CANCEL_NOT_FOUND = -1;
+    public static final int CANCEL_INELIGIBLE = -2;
+    public static final int CANCEL_ERROR = -3;
 
     public int registerPlayerForTournament(String firebaseUid, int tournamentId, String registrationDate) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -444,6 +449,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             cursor.close();
         }
         return isRegistered;
+    }
+
+    public int cancelTournamentRegistration(String firebaseUid, int tournamentId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            // 1. Resolve local user ID
+            User user = getUserByFirebaseUid(firebaseUid);
+            if (user == null) {
+                return CANCEL_ERROR;
+            }
+            int userId = user.getId();
+
+            // 2. Validate Tournament Status is "Upcoming"
+            Tournament tournament = getTournamentById(tournamentId);
+            if (tournament == null || !"Upcoming".equals(tournament.getStatus())) {
+                return CANCEL_INELIGIBLE;
+            }
+
+            // 3. Attempt Delete
+            int rowsDeleted = db.delete(TABLE_REGISTRATIONS, 
+                    COL_REG_UID + "=? AND " + COL_REG_TID + "=?", 
+                    new String[]{String.valueOf(userId), String.valueOf(tournamentId)});
+            
+            if (rowsDeleted > 0) {
+                db.setTransactionSuccessful();
+                return CANCEL_SUCCESS;
+            } else {
+                return CANCEL_NOT_FOUND;
+            }
+        } catch (Exception e) {
+            return CANCEL_ERROR;
+        } finally {
+            db.endTransaction();
+        }
     }
 
     public List<Tournament> getPlayerRegistrations(String firebaseUid) {

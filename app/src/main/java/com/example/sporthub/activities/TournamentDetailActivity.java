@@ -5,6 +5,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
@@ -116,14 +117,23 @@ public class TournamentDetailActivity extends AppCompatActivity {
 
         // 3. Check if already registered
         boolean isRegistered = dbHelper.isPlayerRegistered(uid, tournamentId);
+        
+        // 4. Check tournament status
+        boolean isUpcoming = "Upcoming".equalsIgnoreCase(status);
+
         if (isRegistered) {
-            btnRegister.setEnabled(false);
-            btnRegister.setText("Already Registered");
+            if (isUpcoming) {
+                btnRegister.setEnabled(true);
+                btnRegister.setText("Cancel Registration");
+                btnRegister.setOnClickListener(v -> confirmCancellation(uid));
+            } else {
+                btnRegister.setEnabled(false);
+                btnRegister.setText("Registered (In Progress)");
+            }
             return;
         }
 
-        // 4. Check if tournament is upcoming
-        if (!"Upcoming".equalsIgnoreCase(status)) {
+        if (!isUpcoming) {
             btnRegister.setEnabled(false);
             btnRegister.setText("Registration Closed");
             return;
@@ -133,6 +143,45 @@ public class TournamentDetailActivity extends AppCompatActivity {
         btnRegister.setEnabled(true);
         btnRegister.setText("Register");
         btnRegister.setOnClickListener(v -> processRegistration(uid));
+    }
+
+    private void confirmCancellation(String uid) {
+        new AlertDialog.Builder(this)
+                .setTitle("Cancel Registration")
+                .setMessage("Are you sure you want to cancel your registration for this tournament?")
+                .setPositiveButton("Yes", (dialog, which) -> processCancellation(uid))
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    private void processCancellation(String uid) {
+        btnRegister.setEnabled(false);
+        btnRegister.setText("Cancelling...");
+
+        int result = dbHelper.cancelTournamentRegistration(uid, tournamentId);
+
+        switch (result) {
+            case DatabaseHelper.CANCEL_SUCCESS:
+                Toast.makeText(this, "Registration Cancelled.", Toast.LENGTH_SHORT).show();
+                btnRegister.setEnabled(true);
+                btnRegister.setText("Register");
+                btnRegister.setOnClickListener(v -> processRegistration(uid));
+                break;
+            case DatabaseHelper.CANCEL_NOT_FOUND:
+                Toast.makeText(this, "Registration not found or already cancelled.", Toast.LENGTH_SHORT).show();
+                loadTournamentDetails(); // Refresh to resync state
+                break;
+            case DatabaseHelper.CANCEL_INELIGIBLE:
+                Toast.makeText(this, "Cannot cancel. Tournament is no longer upcoming.", Toast.LENGTH_SHORT).show();
+                loadTournamentDetails(); // Refresh to resync state
+                break;
+            case DatabaseHelper.CANCEL_ERROR:
+            default:
+                Toast.makeText(this, "Error cancelling registration.", Toast.LENGTH_SHORT).show();
+                btnRegister.setEnabled(true);
+                btnRegister.setText("Cancel Registration");
+                break;
+        }
     }
 
     private void processRegistration(String uid) {
