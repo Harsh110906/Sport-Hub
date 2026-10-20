@@ -150,6 +150,9 @@ public class WorkoutFormActivity extends AppCompatActivity {
             return;
         }
 
+        btnSave.setEnabled(false);
+        btnSave.setText("Saving...");
+
         WorkoutPlan wp = new WorkoutPlan();
         wp.setUserId(userId);
         wp.setTitle(title);
@@ -165,6 +168,8 @@ public class WorkoutFormActivity extends AppCompatActivity {
                 finish();
             } else {
                 Toast.makeText(this, "Error saving plan", Toast.LENGTH_SHORT).show();
+                btnSave.setEnabled(true);
+                btnSave.setText("Save");
             }
         } else {
             wp.setId(planId);
@@ -174,6 +179,8 @@ public class WorkoutFormActivity extends AppCompatActivity {
                 finish();
             } else {
                 Toast.makeText(this, "Update failed. Access denied or plan deleted.", Toast.LENGTH_LONG).show();
+                btnSave.setEnabled(true);
+                btnSave.setText("Save");
             }
         }
     }

@@ -139,6 +139,9 @@ public class EventFormActivity extends AppCompatActivity {
             return;
         }
 
+        btnSave.setEnabled(false);
+        btnSave.setText("Saving...");
+
         Event e = new Event();
         e.setName(name);
         e.setDescription(desc);
@@ -155,6 +158,8 @@ public class EventFormActivity extends AppCompatActivity {
                 finish();
             } else {
                 Toast.makeText(this, "Error creating event", Toast.LENGTH_SHORT).show();
+                btnSave.setEnabled(true);
+                btnSave.setText("Save");
             }
         } else {
             e.setId(eventId);
@@ -164,6 +169,8 @@ public class EventFormActivity extends AppCompatActivity {
                 finish();
             } else {
                 Toast.makeText(this, "Error updating event", Toast.LENGTH_SHORT).show();
+                btnSave.setEnabled(true);
+                btnSave.setText("Save");
             }
         }
     }

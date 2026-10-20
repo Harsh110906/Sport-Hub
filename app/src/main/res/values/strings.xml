@@ -1,18 +1,13 @@
 <resources>
-    <string name="app_name">SPORTS HUB</string>
-    <string name="tagline">Tournaments, Fitness &amp; Events</string>
-
-    <string name="title_tournaments">Browse Tournaments</string>
-    <string name="title_matches">Match Schedules</string>
-    <string name="title_events">Sports Events</string>
-    <string name="title_fitness">Fitness Tracker</string>
-    <string name="title_workouts">Workout Planner</string>
-    <string name="title_profile">My Profile</string>
-
-    <string name="title_admin_tournaments">Manage Tournaments</string>
-    <string name="title_admin_teams">Teams &amp; Players</string>
-    <string name="title_admin_matches">Schedule Matches</string>
-    <string name="title_admin_events">Manage Events</string>
-
-    <string name="action_logout">Logout</string>
+    <string name="app_name">SportHub</string>
+    <string name="title_activity_admin_event_list">AdminEventListActivity</string>
+    <string name="title_activity_admin_team_list">AdminTeamListActivity</string>
+    <string name="title_activity_admin_match_list">AdminMatchListActivity</string>
+    <string name="title_activity_admin_tournament_list">AdminTournamentListActivity</string>
+    <string name="title_activity_player_event_list">PlayerEventListActivity</string>
+    <string name="title_activity_player_fitness_list">PlayerFitnessListActivity</string>
+    <string name="title_activity_player_match_list">PlayerMatchListActivity</string>
+    <string name="title_activity_player_tournament_list">PlayerTournamentListActivity</string>
+    <string name="title_activity_player_workout_list">PlayerWorkoutListActivity</string>
+    <string name="no_registrations">You haven\'t registered for any tournaments yet. Browse tournaments to register.</string>
 </resources>

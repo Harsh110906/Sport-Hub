@@ -148,6 +148,9 @@ public class TeamFormActivity extends AppCompatActivity {
             return;
         }
 
+        btnSave.setEnabled(false);
+        btnSave.setText("Saving...");
+
         Tournament selectedTournament = (Tournament) spnTournaments.getSelectedItem();
 
         Team t = new Team();
@@ -164,6 +167,8 @@ public class TeamFormActivity extends AppCompatActivity {
                 finish();
             } else {
                 Toast.makeText(this, "Error creating team", Toast.LENGTH_SHORT).show();
+                btnSave.setEnabled(true);
+                btnSave.setText("Save");
             }
         } else {
             t.setId(teamId);
@@ -173,6 +178,8 @@ public class TeamFormActivity extends AppCompatActivity {
                 finish();
             } else {
                 Toast.makeText(this, "Error updating team", Toast.LENGTH_SHORT).show();
+                btnSave.setEnabled(true);
+                btnSave.setText("Save");
             }
         }
     }

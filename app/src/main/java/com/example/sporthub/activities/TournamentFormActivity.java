@@ -173,6 +173,9 @@ public class TournamentFormActivity extends AppCompatActivity {
             return;
         }
 
+        btnSave.setEnabled(false);
+        btnSave.setText("Saving...");
+
         Tournament t = new Tournament();
         t.setName(name);
         t.setSport(sport);
@@ -190,6 +193,8 @@ public class TournamentFormActivity extends AppCompatActivity {
                 finish();
             } else {
                 Toast.makeText(this, "Error creating tournament", Toast.LENGTH_SHORT).show();
+                btnSave.setEnabled(true);
+                btnSave.setText("Save");
             }
         } else {
             t.setId(tournamentId);
@@ -199,6 +204,8 @@ public class TournamentFormActivity extends AppCompatActivity {
                 finish();
             } else {
                 Toast.makeText(this, "Error updating tournament", Toast.LENGTH_SHORT).show();
+                btnSave.setEnabled(true);
+                btnSave.setText("Save");
             }
         }
     }

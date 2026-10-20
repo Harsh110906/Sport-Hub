@@ -256,6 +256,9 @@ public class MatchFormActivity extends AppCompatActivity {
             }
         }
 
+        btnSave.setEnabled(false);
+        btnSave.setText("Saving...");
+
         Match m = new Match();
         m.setTournamentId(selectedTournament.getId());
         m.setTeamAId(teamA.getId());
@@ -273,6 +276,8 @@ public class MatchFormActivity extends AppCompatActivity {
                 finish();
             } else {
                 Toast.makeText(this, "Error scheduling match", Toast.LENGTH_SHORT).show();
+                btnSave.setEnabled(true);
+                btnSave.setText("Save");
             }
         } else {
             m.setId(matchId);
@@ -282,6 +287,8 @@ public class MatchFormActivity extends AppCompatActivity {
                 finish();
             } else {
                 Toast.makeText(this, "Error updating match", Toast.LENGTH_SHORT).show();
+                btnSave.setEnabled(true);
+                btnSave.setText("Save");
             }
         }
     }

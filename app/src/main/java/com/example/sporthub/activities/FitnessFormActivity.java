@@ -166,6 +166,9 @@ public class FitnessFormActivity extends AppCompatActivity {
             }
         }
 
+        btnSave.setEnabled(false);
+        btnSave.setText("Saving...");
+
         FitnessRecord r = new FitnessRecord();
         r.setUserId(userId);
         r.setActivityType(activityType);
@@ -181,6 +184,8 @@ public class FitnessFormActivity extends AppCompatActivity {
                 finish();
             } else {
                 Toast.makeText(this, "Error saving workout", Toast.LENGTH_SHORT).show();
+                btnSave.setEnabled(true);
+                btnSave.setText("Save");
             }
         } else {
             r.setId(recordId);
@@ -190,6 +195,8 @@ public class FitnessFormActivity extends AppCompatActivity {
                 finish();
             } else {
                 Toast.makeText(this, "Update failed. Access denied or record deleted.", Toast.LENGTH_LONG).show();
+                btnSave.setEnabled(true);
+                btnSave.setText("Save");
             }
         }
     }
