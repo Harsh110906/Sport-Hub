@@ -42,4 +42,12 @@ public class TournamentAdapter extends ArrayAdapter<Tournament> {
 
         return convertView;
     }
+
+    public void updateData(List<Tournament> newTournaments) {
+        clear();
+        if (newTournaments != null) {
+            addAll(newTournaments);
+        }
+        notifyDataSetChanged();
+    }
 }

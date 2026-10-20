@@ -3,9 +3,16 @@ package com.example.sporthub.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.AdapterView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -20,7 +27,10 @@ import com.example.sporthub.models.Tournament;
 import com.example.sporthub.utils.SessionManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class AdminTournamentListActivity extends AppCompatActivity {
 
@@ -28,7 +38,15 @@ public class AdminTournamentListActivity extends AppCompatActivity {
     private ListView lvTournaments;
     private TextView tvEmptyState;
     private TournamentAdapter adapter;
-    private List<Tournament> tournamentList;
+    private List<Tournament> masterTournamentList;
+    private List<Tournament> filteredTournamentList;
+    
+    private EditText etSearch;
+    private Spinner spnSportFilter;
+    private Spinner spnStatusFilter;
+    private Button btnClearFilters;
+    
+    private boolean isSpinnerInitialized = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,18 +77,66 @@ public class AdminTournamentListActivity extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
         lvTournaments = findViewById(R.id.lvAdminTournaments);
         tvEmptyState = findViewById(R.id.tvEmptyState);
+        etSearch = findViewById(R.id.etAdminSearch);
+        spnSportFilter = findViewById(R.id.spnAdminSportFilter);
+        spnStatusFilter = findViewById(R.id.spnAdminStatusFilter);
+        btnClearFilters = findViewById(R.id.btnAdminClearFilters);
         FloatingActionButton fabAddTournament = findViewById(R.id.fabAddTournament);
 
+        // Setup static status spinner
+        String[] statuses = {"All Statuses", "Upcoming", "Ongoing", "Completed"};
+        ArrayAdapter<String> statusAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, statuses);
+        spnStatusFilter.setAdapter(statusAdapter);
+
         fabAddTournament.setOnClickListener(v -> {
-            Intent intent = new Intent(AdminTournamentListActivity.this, TournamentFormActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(AdminTournamentListActivity.this, TournamentFormActivity.class));
         });
 
         lvTournaments.setOnItemClickListener((parent, view, position, id) -> {
-            Tournament selected = tournamentList.get(position);
+            Tournament selected = filteredTournamentList.get(position);
             Intent intent = new Intent(AdminTournamentListActivity.this, TournamentFormActivity.class);
             intent.putExtra("TOURNAMENT_ID", selected.getId());
             startActivity(intent);
+        });
+
+        setupFilterListeners();
+    }
+
+    private void setupFilterListeners() {
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                applyFilters();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        AdapterView.OnItemSelectedListener spinnerListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (isSpinnerInitialized) {
+                    applyFilters();
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        };
+
+        spnSportFilter.setOnItemSelectedListener(spinnerListener);
+        spnStatusFilter.setOnItemSelectedListener(spinnerListener);
+
+        btnClearFilters.setOnClickListener(v -> {
+            isSpinnerInitialized = false;
+            etSearch.setText("");
+            spnSportFilter.setSelection(0);
+            spnStatusFilter.setSelection(0);
+            isSpinnerInitialized = true;
+            applyFilters();
         });
     }
 
@@ -81,15 +147,91 @@ public class AdminTournamentListActivity extends AppCompatActivity {
     }
 
     private void loadTournaments() {
-        tournamentList = dbHelper.getAllTournaments();
-        if (tournamentList.isEmpty()) {
+        masterTournamentList = dbHelper.getAllTournaments();
+        
+        // Dynamically populate Sport Spinner based on available data
+        Set<String> sports = new HashSet<>();
+        for (Tournament t : masterTournamentList) {
+            if (t.getSport() != null && !t.getSport().trim().isEmpty()) {
+                sports.add(t.getSport().trim());
+            }
+        }
+        List<String> sportOptions = new ArrayList<>();
+        sportOptions.add("All Sports");
+        sportOptions.addAll(sports);
+        
+        // Preserve selection if possible
+        String currentSportSelection = null;
+        if (spnSportFilter.getSelectedItem() != null) {
+            currentSportSelection = spnSportFilter.getSelectedItem().toString();
+        }
+
+        isSpinnerInitialized = false;
+        ArrayAdapter<String> sportAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, sportOptions);
+        spnSportFilter.setAdapter(sportAdapter);
+        
+        if (currentSportSelection != null && sportOptions.contains(currentSportSelection)) {
+            spnSportFilter.setSelection(sportOptions.indexOf(currentSportSelection));
+        } else {
+            spnSportFilter.setSelection(0);
+        }
+        isSpinnerInitialized = true;
+
+        if (adapter == null) {
+            filteredTournamentList = new ArrayList<>(masterTournamentList);
+            adapter = new TournamentAdapter(this, filteredTournamentList);
+            lvTournaments.setAdapter(adapter);
+        }
+        
+        applyFilters();
+    }
+
+    private void applyFilters() {
+        if (masterTournamentList == null) return;
+
+        String searchQuery = etSearch.getText().toString().trim().toLowerCase();
+        String selectedSport = spnSportFilter.getSelectedItem() != null ? spnSportFilter.getSelectedItem().toString() : "All Sports";
+        String selectedStatus = spnStatusFilter.getSelectedItem() != null ? spnStatusFilter.getSelectedItem().toString() : "All Statuses";
+
+        filteredTournamentList = new ArrayList<>();
+
+        for (Tournament t : masterTournamentList) {
+            boolean matchesName = true;
+            boolean matchesSport = true;
+            boolean matchesStatus = true;
+
+            if (!searchQuery.isEmpty()) {
+                matchesName = t.getName() != null && t.getName().toLowerCase().contains(searchQuery);
+            }
+
+            if (!"All Sports".equals(selectedSport)) {
+                matchesSport = t.getSport() != null && t.getSport().trim().equalsIgnoreCase(selectedSport);
+            }
+
+            if (!"All Statuses".equals(selectedStatus)) {
+                matchesStatus = t.getStatus() != null && t.getStatus().equalsIgnoreCase(selectedStatus);
+            }
+
+            if (matchesName && matchesSport && matchesStatus) {
+                filteredTournamentList.add(t);
+            }
+        }
+
+        if (filteredTournamentList.isEmpty()) {
+            if (masterTournamentList.isEmpty()) {
+                tvEmptyState.setText("No tournaments found. Click + to add one.");
+            } else {
+                tvEmptyState.setText("No tournaments match your filters.");
+            }
             tvEmptyState.setVisibility(View.VISIBLE);
             lvTournaments.setVisibility(View.GONE);
         } else {
             tvEmptyState.setVisibility(View.GONE);
             lvTournaments.setVisibility(View.VISIBLE);
-            adapter = new TournamentAdapter(this, tournamentList);
-            lvTournaments.setAdapter(adapter);
+        }
+
+        if (adapter != null) {
+            adapter.updateData(filteredTournamentList);
         }
     }
 }
