@@ -397,20 +397,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
         try {
-            // 1. Resolve local user ID
+            // 1. Resolve local user ID securely from Firebase UID
             User user = getUserByFirebaseUid(firebaseUid);
             if (user == null) {
                 return REGISTRATION_ERROR;
             }
             int userId = user.getId();
 
-            // 2. Validate Tournament Status is "Upcoming"
+            // 2. Validate Tournament exists and Status is strictly "Upcoming"
             Tournament tournament = getTournamentById(tournamentId);
-            if (tournament == null || !"Upcoming".equals(tournament.getStatus())) {
+            if (tournament == null || !"Upcoming".equalsIgnoreCase(tournament.getStatus())) {
                 return REGISTRATION_INELIGIBLE;
             }
 
-            // 3. Attempt Insert
+            // 3. Attempt Insert (UNIQUE constraint on user_id, tournament_id protects against concurrency)
             ContentValues values = new ContentValues();
             values.put(COL_REG_UID, userId);
             values.put(COL_REG_TID, tournamentId);
@@ -422,7 +422,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 return REGISTRATION_SUCCESS;
             }
         } catch (android.database.sqlite.SQLiteConstraintException e) {
-            // Catches UNIQUE constraint failure
+            // Catches UNIQUE constraint failure meaning duplicate registration
             return REGISTRATION_DUPLICATE;
         } catch (Exception e) {
             return REGISTRATION_ERROR;
