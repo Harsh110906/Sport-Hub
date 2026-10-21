@@ -75,14 +75,14 @@ public class EventDetailActivity extends AppCompatActivity {
             String desc = (e.getDescription() == null || e.getDescription().isEmpty()) ? "No description provided." : e.getDescription();
             tvDesc.setText(desc);
             
-            tvSport.setText("Sport: " + e.getSport());
-            tvDate.setText("Date: " + e.getEventDate());
+            tvSport.setText(e.getSport());
+            tvDate.setText(e.getEventDate());
             
-            String venue = (e.getVenue() == null || e.getVenue().isEmpty()) ? "TBD" : e.getVenue();
-            tvVenue.setText("Venue: " + venue);
+            String venue = (e.getVenue() == null || e.getVenue().isEmpty()) ? "Not specified" : e.getVenue();
+            tvVenue.setText(venue);
             
-            String organizer = (e.getOrganizer() == null || e.getOrganizer().isEmpty()) ? "TBD" : e.getOrganizer();
-            tvOrganizer.setText("Organizer: " + organizer);
+            String organizer = (e.getOrganizer() == null || e.getOrganizer().isEmpty()) ? "Not specified" : e.getOrganizer();
+            tvOrganizer.setText(organizer);
 
         } else {
             Toast.makeText(this, "Event Error", Toast.LENGTH_SHORT).show();

@@ -89,16 +89,16 @@ public class TournamentDetailActivity extends AppCompatActivity {
 
             tvName.setText(t.getName());
             tvStatus.setText(t.getStatus());
-            tvSport.setText("Sport: " + t.getSport());
-            tvDates.setText("Dates: " + t.getStartDate() + " to " + t.getEndDate());
+            tvSport.setText(t.getSport());
+            tvDates.setText(t.getStartDate() + " to " + t.getEndDate());
             
-            String venue = (t.getVenue() == null || t.getVenue().isEmpty()) ? "TBD" : t.getVenue();
-            tvVenue.setText("Venue: " + venue);
+            String venue = (t.getVenue() == null || t.getVenue().isEmpty()) ? "Not specified" : t.getVenue();
+            tvVenue.setText(venue);
             
-            String organizer = (t.getOrganizer() == null || t.getOrganizer().isEmpty()) ? "TBD" : t.getOrganizer();
-            tvOrganizer.setText("Organizer: " + organizer);
+            String organizer = (t.getOrganizer() == null || t.getOrganizer().isEmpty()) ? "Not specified" : t.getOrganizer();
+            tvOrganizer.setText(organizer);
             
-            tvMaxTeams.setText("Max Teams Capacity: " + t.getMaxTeams());
+            tvMaxTeams.setText(String.valueOf(t.getMaxTeams()) + " Teams");
 
             setupRegistrationButton(t.getStatus());
 
