@@ -48,6 +48,12 @@ public class TournamentDetailActivity extends AppCompatActivity {
 
         dbHelper = new DatabaseHelper(this);
         sessionManager = new SessionManager(this);
+
+        if (!sessionManager.isLoggedIn()) {
+            Toast.makeText(this, "Please log in to view tournament details", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         btnRegister = findViewById(R.id.btnRegister);
 
         if (getIntent().hasExtra("TOURNAMENT_ID")) {

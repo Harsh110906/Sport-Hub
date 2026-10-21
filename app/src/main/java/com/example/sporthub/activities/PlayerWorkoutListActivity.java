@@ -45,8 +45,8 @@ public class PlayerWorkoutListActivity extends AppCompatActivity {
         SessionManager sessionManager = new SessionManager(this);
 
         // Security check - Player only
-        if (!sessionManager.isLoggedIn() || !"Player".equalsIgnoreCase(sessionManager.getRole()) || sessionManager.getFirebaseUid() == null) {
-            Toast.makeText(this, "Access Denied", Toast.LENGTH_SHORT).show();
+        if (!sessionManager.isPlayer()) {
+            Toast.makeText(this, "Access Denied: Player access required", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }

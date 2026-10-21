@@ -96,19 +96,21 @@ public class MainActivity extends AppCompatActivity {
         }
         tvWelcome.setText("Welcome, " + userName + "!");
 
-        String role = sessionManager.getRole();
-        if (role == null || role.isEmpty()) {
-            role = "Player"; // Safe fallback
-        }
-        tvUserRole.setText("Role: " + role);
-
         // Toggle visibility based on Role
-        if ("Admin".equalsIgnoreCase(role)) {
+        if (sessionManager.isAdmin()) {
+            tvUserRole.setText("Role: Admin");
             layoutAdminDashboard.setVisibility(View.VISIBLE);
             setupAdminListeners();
-        } else {
+        } else if (sessionManager.isPlayer()) {
+            tvUserRole.setText("Role: Player");
             layoutPlayerDashboard.setVisibility(View.VISIBLE);
             setupPlayerListeners();
+        } else {
+            Toast.makeText(this, "Session invalid. Please log in again.", Toast.LENGTH_SHORT).show();
+            sessionManager.logoutUser();
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            finish();
+            return;
         }
 
         // Shared Profile listener

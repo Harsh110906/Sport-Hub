@@ -23,6 +23,7 @@ import com.example.sporthub.R;
 import com.example.sporthub.adapters.TournamentAdapter;
 import com.example.sporthub.database.DatabaseHelper;
 import com.example.sporthub.models.Tournament;
+import com.example.sporthub.utils.SessionManager;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -49,6 +50,13 @@ public class PlayerTournamentListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player_tournament_list);
+
+        SessionManager sessionManager = new SessionManager(this);
+        if (!sessionManager.isPlayer()) {
+            android.widget.Toast.makeText(this, "Access Denied: Player access required", android.widget.Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.toolbarPlayerList), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());

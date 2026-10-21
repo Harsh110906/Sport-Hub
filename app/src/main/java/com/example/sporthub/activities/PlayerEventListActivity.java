@@ -16,6 +16,7 @@ import com.example.sporthub.R;
 import com.example.sporthub.adapters.EventAdapter;
 import com.example.sporthub.database.DatabaseHelper;
 import com.example.sporthub.models.Event;
+import com.example.sporthub.utils.SessionManager;
 
 import java.util.List;
 
@@ -30,6 +31,13 @@ public class PlayerEventListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player_event_list);
+
+        SessionManager sessionManager = new SessionManager(this);
+        if (!sessionManager.isPlayer()) {
+            android.widget.Toast.makeText(this, "Access Denied: Player access required", android.widget.Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.toolbarPlayerEvents), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());

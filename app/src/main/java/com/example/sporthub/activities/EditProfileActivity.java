@@ -46,6 +46,12 @@ public class EditProfileActivity extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
         sessionManager = new SessionManager(this);
 
+        if (!sessionManager.isLoggedIn()) {
+            Toast.makeText(this, "Please log in to edit profile", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         etName = findViewById(R.id.etEditName);
         etFavSport = findViewById(R.id.etEditFavSport);
         btnSave = findViewById(R.id.btnSaveProfile);

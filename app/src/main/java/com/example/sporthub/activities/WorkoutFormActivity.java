@@ -20,7 +20,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.sporthub.R;
 import com.example.sporthub.database.DatabaseHelper;
+import com.example.sporthub.models.User;
 import com.example.sporthub.models.WorkoutPlan;
+import com.example.sporthub.utils.SessionManager;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -47,6 +49,13 @@ public class WorkoutFormActivity extends AppCompatActivity {
             return insets;
         });
 
+        SessionManager sessionManager = new SessionManager(this);
+        if (!sessionManager.isPlayer()) {
+            Toast.makeText(this, "Access Denied: Player access required", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         Toolbar toolbar = findViewById(R.id.toolbarWorkoutForm);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -55,6 +64,14 @@ public class WorkoutFormActivity extends AppCompatActivity {
         }
 
         dbHelper = new DatabaseHelper(this);
+
+        User user = dbHelper.getUserByFirebaseUid(sessionManager.getFirebaseUid());
+        if (user == null) {
+            Toast.makeText(this, "Session Error: User profile missing", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        userId = user.getId();
 
         etTitle = findViewById(R.id.etWorkoutTitle);
         spnActivity = findViewById(R.id.spnWorkoutActivity);
@@ -76,16 +93,6 @@ public class WorkoutFormActivity extends AppCompatActivity {
         spnStatus.setAdapter(statusAdapter);
 
         tvDate.setOnClickListener(v -> showDatePicker());
-
-        if (getIntent().hasExtra("USER_ID")) {
-            userId = getIntent().getIntExtra("USER_ID", -1);
-        }
-
-        if (userId == -1) {
-            Toast.makeText(this, "Security Error: Missing User ID.", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
 
         if (getIntent().hasExtra("PLAN_ID")) {
             planId = getIntent().getIntExtra("PLAN_ID", -1);

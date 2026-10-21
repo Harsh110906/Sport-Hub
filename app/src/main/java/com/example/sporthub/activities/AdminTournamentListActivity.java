@@ -61,8 +61,8 @@ public class AdminTournamentListActivity extends AppCompatActivity {
 
         // Security Role Check
         SessionManager sessionManager = new SessionManager(this);
-        if (!"Admin".equalsIgnoreCase(sessionManager.getRole())) {
-            Toast.makeText(this, "Access Denied: Admin Only", Toast.LENGTH_SHORT).show();
+        if (!sessionManager.isAdmin()) {
+            Toast.makeText(this, "Access Denied: Admin privileges required", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }

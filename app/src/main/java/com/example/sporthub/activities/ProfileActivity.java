@@ -44,6 +44,12 @@ public class ProfileActivity extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
         sessionManager = new SessionManager(this);
 
+        if (!sessionManager.isLoggedIn()) {
+            Toast.makeText(this, "Please log in to view profile", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         tvName = findViewById(R.id.tvProfileName);
         tvEmail = findViewById(R.id.tvProfileEmail);
         tvRole = findViewById(R.id.tvProfileRole);

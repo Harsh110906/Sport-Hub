@@ -29,11 +29,21 @@ public class SessionManager {
     }
 
     public boolean isLoggedIn() {
-        return pref.getBoolean(KEY_IS_LOGGED_IN, false);
+        return pref.getBoolean(KEY_IS_LOGGED_IN, false) 
+                && getFirebaseUid() != null 
+                && !getFirebaseUid().trim().isEmpty();
     }
 
     public String getRole() {
-        return pref.getString(KEY_ROLE, "Player");
+        return pref.getString(KEY_ROLE, null);
+    }
+
+    public boolean isAdmin() {
+        return isLoggedIn() && "Admin".equalsIgnoreCase(getRole());
+    }
+
+    public boolean isPlayer() {
+        return isLoggedIn() && "Player".equalsIgnoreCase(getRole());
     }
 
     public String getName() {

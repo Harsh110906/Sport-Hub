@@ -47,8 +47,8 @@ public class EventFormActivity extends AppCompatActivity {
         });
 
         SessionManager sessionManager = new SessionManager(this);
-        if (!"Admin".equalsIgnoreCase(sessionManager.getRole())) {
-            Toast.makeText(this, "Access Denied", Toast.LENGTH_SHORT).show();
+        if (!sessionManager.isAdmin()) {
+            Toast.makeText(this, "Access Denied: Admin privileges required", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }

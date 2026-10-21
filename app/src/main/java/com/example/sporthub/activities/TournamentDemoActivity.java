@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.sporthub.R;
 import com.example.sporthub.database.DatabaseHelper;
 import com.example.sporthub.models.Tournament;
+import com.example.sporthub.utils.SessionManager;
 
 import java.util.List;
 
@@ -30,6 +31,13 @@ public class TournamentDemoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tournament_demo);
+
+        SessionManager sessionManager = new SessionManager(this);
+        if (!sessionManager.isAdmin()) {
+            Toast.makeText(this, "Access Denied: Admin privileges required", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         dbHelper = new DatabaseHelper(this);
 
