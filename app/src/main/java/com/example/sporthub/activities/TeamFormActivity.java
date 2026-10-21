@@ -189,9 +189,13 @@ public class TeamFormActivity extends AppCompatActivity {
                 .setTitle("Delete Team")
                 .setMessage("Are you sure you want to permanently delete this team?")
                 .setPositiveButton("Yes", (dialog, which) -> {
-                    dbHelper.deleteTeam(teamId);
-                    Toast.makeText(this, "Team Deleted", Toast.LENGTH_SHORT).show();
-                    finish();
+                    boolean success = dbHelper.deleteTeam(teamId);
+                    if (success) {
+                        Toast.makeText(this, "Team Deleted", Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        Toast.makeText(this, "Error deleting team", Toast.LENGTH_SHORT).show();
+                    }
                 })
                 .setNegativeButton("No", null)
                 .show();

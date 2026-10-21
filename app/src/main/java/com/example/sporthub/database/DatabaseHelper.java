@@ -5,20 +5,26 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.example.sporthub.models.Event;
+import com.example.sporthub.models.FitnessRecord;
+import com.example.sporthub.models.Match;
+import com.example.sporthub.models.Team;
 import com.example.sporthub.models.Tournament;
 import com.example.sporthub.models.User;
+import com.example.sporthub.models.WorkoutPlan;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
+    private static final String TAG = "DatabaseHelper";
     private static final String DATABASE_NAME = "SportHub.db";
     private static final int DATABASE_VERSION = 5;
 
-    // Users Table (Existing)
+    // Users Table
     private static final String TABLE_USERS = "users";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_UID = "firebaseUid";
@@ -46,7 +52,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COL_TEAM_SPORT = "sport";
     private static final String COL_TEAM_CAPTAIN = "captain";
     private static final String COL_TEAM_CONTACT = "contact_email";
-    private static final String COL_TEAM_TID = "tournament_id"; // Foreign key
+    private static final String COL_TEAM_TID = "tournament_id";
 
     // Matches Table
     private static final String TABLE_MATCHES = "matches";
@@ -63,7 +69,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Fitness Table
     private static final String TABLE_FITNESS = "fitness_records";
     private static final String COL_FITNESS_ID = "id";
-    private static final String COL_FITNESS_UID = "user_id"; // Foreign key
+    private static final String COL_FITNESS_UID = "user_id";
     private static final String COL_FITNESS_ACTIVITY = "activity_type";
     private static final String COL_FITNESS_DURATION = "duration_minutes";
     private static final String COL_FITNESS_CALORIES = "calories_burned";
@@ -81,17 +87,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COL_EVENT_ORGANIZER = "organizer";
     private static final String COL_EVENT_STATUS = "status";
 
-    // Tournament Registrations Table (Phase 6)
+    // Tournament Registrations Table
     private static final String TABLE_REGISTRATIONS = "tournament_registrations";
     private static final String COL_REG_ID = "id";
     private static final String COL_REG_UID = "user_id";
     private static final String COL_REG_TID = "tournament_id";
     private static final String COL_REG_DATE = "registration_date";
 
-    // Workout Plans Table (Phase 10)
+    // Workout Plans Table
     private static final String TABLE_WORKOUTS = "workout_plans";
     private static final String COL_WORKOUT_ID = "id";
-    private static final String COL_WORKOUT_UID = "user_id"; // Foreign key
+    private static final String COL_WORKOUT_UID = "user_id";
     private static final String COL_WORKOUT_TITLE = "title";
     private static final String COL_WORKOUT_ACTIVITY = "activity_type";
     private static final String COL_WORKOUT_DATE = "planned_date";
@@ -111,7 +117,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Create Users Table
         String CREATE_USERS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_USERS + "("
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + COLUMN_UID + " TEXT UNIQUE,"
@@ -230,81 +235,135 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // ==========================================
-    // USERS CRUD (Existing Phase 2 functionality)
+    // USERS CRUD
     // ==========================================
 
     public long addUser(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COLUMN_UID, user.getFirebaseUid());
-        values.put(COLUMN_NAME, user.getName());
-        values.put(COLUMN_EMAIL, user.getEmail());
-        values.put(COLUMN_ROLE, user.getRole());
-        values.put(COLUMN_FAV_SPORT, user.getFavoriteSport());
-        
-        long id = db.insert(TABLE_USERS, null, values);
-        db.close();
-        return id;
+        try {
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_UID, user.getFirebaseUid());
+            values.put(COLUMN_NAME, user.getName());
+            values.put(COLUMN_EMAIL, user.getEmail());
+            values.put(COLUMN_ROLE, user.getRole());
+            values.put(COLUMN_FAV_SPORT, user.getFavoriteSport());
+            
+            return db.insert(TABLE_USERS, null, values);
+        } catch (Exception e) {
+            Log.e(TAG, "Error adding user", e);
+            return -1;
+        } finally {
+            db.close();
+        }
     }
 
     public User getUserByFirebaseUid(String uid) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_USERS, 
-                new String[]{COLUMN_ID, COLUMN_UID, COLUMN_NAME, COLUMN_EMAIL, COLUMN_ROLE, COLUMN_FAV_SPORT},
-                COLUMN_UID + "=?", new String[]{uid}, null, null, null);
+        Cursor cursor = null;
+        try {
+            cursor = db.query(TABLE_USERS, 
+                    new String[]{COLUMN_ID, COLUMN_UID, COLUMN_NAME, COLUMN_EMAIL, COLUMN_ROLE, COLUMN_FAV_SPORT},
+                    COLUMN_UID + "=?", new String[]{uid}, null, null, null);
 
-        if (cursor != null && cursor.moveToFirst()) {
-            User user = new User();
-            user.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)));
-            user.setFirebaseUid(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_UID)));
-            user.setName(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME)));
-            user.setEmail(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_EMAIL)));
-            user.setRole(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ROLE)));
-            user.setFavoriteSport(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_FAV_SPORT)));
-            cursor.close();
-            return user;
+            if (cursor != null && cursor.moveToFirst()) {
+                User user = new User();
+                user.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)));
+                user.setFirebaseUid(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_UID)));
+                user.setName(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME)));
+                user.setEmail(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_EMAIL)));
+                user.setRole(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ROLE)));
+                user.setFavoriteSport(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_FAV_SPORT)));
+                return user;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting user by UID", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
-        if (cursor != null) cursor.close();
         return null;
     }
 
     public boolean updateUserProfile(int localUserId, String newName, String newFavSport) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COLUMN_NAME, newName);
-        values.put(COLUMN_FAV_SPORT, newFavSport);
-        
-        int rows = db.update(TABLE_USERS, values, COLUMN_ID + "=?", new String[]{String.valueOf(localUserId)});
-        db.close();
-        return rows > 0;
+        try {
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_NAME, newName);
+            values.put(COLUMN_FAV_SPORT, newFavSport);
+            
+            int rows = db.update(TABLE_USERS, values, COLUMN_ID + "=?", new String[]{String.valueOf(localUserId)});
+            return rows > 0;
+        } catch (Exception e) {
+            Log.e(TAG, "Error updating user profile", e);
+            return false;
+        } finally {
+            db.close();
+        }
     }
 
     // ==========================================
-    // TOURNAMENTS CRUD (Phase 4)
+    // TOURNAMENTS CRUD
     // ==========================================
 
     public long addTournament(Tournament t) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COL_TOURNAMENT_NAME, t.getName());
-        values.put(COL_TOURNAMENT_SPORT, t.getSport());
-        values.put(COL_TOURNAMENT_ORGANIZER, t.getOrganizer());
-        values.put(COL_TOURNAMENT_START, t.getStartDate());
-        values.put(COL_TOURNAMENT_END, t.getEndDate());
-        values.put(COL_TOURNAMENT_VENUE, t.getVenue());
-        values.put(COL_TOURNAMENT_MAX_TEAMS, t.getMaxTeams());
-        values.put(COL_TOURNAMENT_STATUS, t.getStatus());
-        long id = db.insert(TABLE_TOURNAMENTS, null, values);
-        db.close();
-        return id;
+        try {
+            ContentValues values = new ContentValues();
+            values.put(COL_TOURNAMENT_NAME, t.getName());
+            values.put(COL_TOURNAMENT_SPORT, t.getSport());
+            values.put(COL_TOURNAMENT_ORGANIZER, t.getOrganizer());
+            values.put(COL_TOURNAMENT_START, t.getStartDate());
+            values.put(COL_TOURNAMENT_END, t.getEndDate());
+            values.put(COL_TOURNAMENT_VENUE, t.getVenue());
+            values.put(COL_TOURNAMENT_MAX_TEAMS, t.getMaxTeams());
+            values.put(COL_TOURNAMENT_STATUS, t.getStatus());
+            return db.insert(TABLE_TOURNAMENTS, null, values);
+        } catch (Exception e) {
+            Log.e(TAG, "Error adding tournament", e);
+            return -1;
+        } finally {
+            db.close();
+        }
     }
 
     public List<Tournament> getAllTournaments() {
         List<Tournament> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_TOURNAMENTS, null);
-        if (cursor.moveToFirst()) {
-            do {
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_TOURNAMENTS, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    Tournament t = new Tournament();
+                    t.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_ID)));
+                    t.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_NAME)));
+                    t.setSport(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_SPORT)));
+                    t.setOrganizer(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_ORGANIZER)));
+                    t.setStartDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_START)));
+                    t.setEndDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_END)));
+                    t.setVenue(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_VENUE)));
+                    t.setMaxTeams(cursor.getInt(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_MAX_TEAMS)));
+                    t.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_STATUS)));
+                    list.add(t);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting all tournaments", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return list;
+    }
+
+    public Tournament getTournamentById(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            cursor = db.query(TABLE_TOURNAMENTS, null, COL_TOURNAMENT_ID + "=?", new String[]{String.valueOf(id)}, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
                 Tournament t = new Tournament();
                 t.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_ID)));
                 t.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_NAME)));
@@ -315,48 +374,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 t.setVenue(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_VENUE)));
                 t.setMaxTeams(cursor.getInt(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_MAX_TEAMS)));
                 t.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_STATUS)));
-                list.add(t);
-            } while (cursor.moveToNext());
+                return t;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting tournament by ID", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
-        cursor.close();
-        return list;
-    }
-
-    public Tournament getTournamentById(int id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_TOURNAMENTS, null, COL_TOURNAMENT_ID + "=?", new String[]{String.valueOf(id)}, null, null, null);
-        if (cursor != null && cursor.moveToFirst()) {
-            Tournament t = new Tournament();
-            t.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_ID)));
-            t.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_NAME)));
-            t.setSport(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_SPORT)));
-            t.setOrganizer(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_ORGANIZER)));
-            t.setStartDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_START)));
-            t.setEndDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_END)));
-            t.setVenue(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_VENUE)));
-            t.setMaxTeams(cursor.getInt(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_MAX_TEAMS)));
-            t.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_STATUS)));
-            cursor.close();
-            return t;
-        }
-        if (cursor != null) cursor.close();
         return null;
     }
 
     public int updateTournament(Tournament t) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COL_TOURNAMENT_NAME, t.getName());
-        values.put(COL_TOURNAMENT_SPORT, t.getSport());
-        values.put(COL_TOURNAMENT_ORGANIZER, t.getOrganizer());
-        values.put(COL_TOURNAMENT_START, t.getStartDate());
-        values.put(COL_TOURNAMENT_END, t.getEndDate());
-        values.put(COL_TOURNAMENT_VENUE, t.getVenue());
-        values.put(COL_TOURNAMENT_MAX_TEAMS, t.getMaxTeams());
-        values.put(COL_TOURNAMENT_STATUS, t.getStatus());
-        int rows = db.update(TABLE_TOURNAMENTS, values, COL_TOURNAMENT_ID + "=?", new String[]{String.valueOf(t.getId())});
-        db.close();
-        return rows;
+        try {
+            ContentValues values = new ContentValues();
+            values.put(COL_TOURNAMENT_NAME, t.getName());
+            values.put(COL_TOURNAMENT_SPORT, t.getSport());
+            values.put(COL_TOURNAMENT_ORGANIZER, t.getOrganizer());
+            values.put(COL_TOURNAMENT_START, t.getStartDate());
+            values.put(COL_TOURNAMENT_END, t.getEndDate());
+            values.put(COL_TOURNAMENT_VENUE, t.getVenue());
+            values.put(COL_TOURNAMENT_MAX_TEAMS, t.getMaxTeams());
+            values.put(COL_TOURNAMENT_STATUS, t.getStatus());
+            return db.update(TABLE_TOURNAMENTS, values, COL_TOURNAMENT_ID + "=?", new String[]{String.valueOf(t.getId())});
+        } catch (Exception e) {
+            Log.e(TAG, "Error updating tournament", e);
+            return 0;
+        } finally {
+            db.close();
+        }
     }
 
     public boolean deleteTournament(int id) {
@@ -365,7 +413,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         try {
             String[] idArgs = new String[]{String.valueOf(id)};
             
-            // Delete dependent records safely
+            // Delete dependent records safely (child-first deletion)
             db.delete(TABLE_REGISTRATIONS, COL_REG_TID + "=?", idArgs);
             db.delete(TABLE_MATCHES, COL_MATCH_TID + "=?", idArgs);
             db.delete(TABLE_TEAMS, COL_TEAM_TID + "=?", idArgs);
@@ -377,6 +425,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 db.setTransactionSuccessful();
                 return true;
             }
+        } catch (Exception e) {
+            Log.e(TAG, "Error deleting tournament", e);
         } finally {
             db.endTransaction();
             db.close();
@@ -385,7 +435,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // ==========================================
-    // TOURNAMENT REGISTRATIONS CRUD (Phase 6A)
+    // TOURNAMENT REGISTRATIONS CRUD
     // ==========================================
 
     public static final int REGISTRATION_SUCCESS = 1;
@@ -402,20 +452,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
         try {
-            // 1. Resolve local user ID securely from Firebase UID
             User user = getUserByFirebaseUid(firebaseUid);
             if (user == null) {
                 return REGISTRATION_ERROR;
             }
             int userId = user.getId();
 
-            // 2. Validate Tournament exists and Status is strictly "Upcoming"
             Tournament tournament = getTournamentById(tournamentId);
             if (tournament == null || !"Upcoming".equalsIgnoreCase(tournament.getStatus())) {
                 return REGISTRATION_INELIGIBLE;
             }
 
-            // 3. Attempt Insert (UNIQUE constraint on user_id, tournament_id protects against concurrency)
             ContentValues values = new ContentValues();
             values.put(COL_REG_UID, userId);
             values.put(COL_REG_TID, tournamentId);
@@ -427,14 +474,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 return REGISTRATION_SUCCESS;
             }
         } catch (android.database.sqlite.SQLiteConstraintException e) {
-            // Catches UNIQUE constraint failure meaning duplicate registration
             return REGISTRATION_DUPLICATE;
         } catch (Exception e) {
+            Log.e(TAG, "Error registering player for tournament", e);
             return REGISTRATION_ERROR;
         } finally {
             db.endTransaction();
-            // Do not close db here because getUserByFirebaseUid and getTournamentById handle their own db reads
-            // and mixing readable/writable connections in SQLiteOpenHelper can cause issues if prematurely closed.
         }
         return REGISTRATION_ERROR;
     }
@@ -444,36 +489,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (user == null) return false;
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_REGISTRATIONS, new String[]{COL_REG_ID},
-                COL_REG_UID + "=? AND " + COL_REG_TID + "=?",
-                new String[]{String.valueOf(user.getId()), String.valueOf(tournamentId)},
-                null, null, null);
+        Cursor cursor = null;
+        try {
+            cursor = db.query(TABLE_REGISTRATIONS, new String[]{COL_REG_ID},
+                    COL_REG_UID + "=? AND " + COL_REG_TID + "=?",
+                    new String[]{String.valueOf(user.getId()), String.valueOf(tournamentId)},
+                    null, null, null);
 
-        boolean isRegistered = (cursor != null && cursor.getCount() > 0);
-        if (cursor != null) {
-            cursor.close();
+            return (cursor != null && cursor.getCount() > 0);
+        } catch (Exception e) {
+            Log.e(TAG, "Error checking player registration", e);
+            return false;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
-        return isRegistered;
     }
 
     public int cancelTournamentRegistration(String firebaseUid, int tournamentId) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
         try {
-            // 1. Resolve local user ID
             User user = getUserByFirebaseUid(firebaseUid);
             if (user == null) {
                 return CANCEL_ERROR;
             }
             int userId = user.getId();
 
-            // 2. Validate Tournament Status is "Upcoming"
             Tournament tournament = getTournamentById(tournamentId);
             if (tournament == null || !"Upcoming".equals(tournament.getStatus())) {
                 return CANCEL_INELIGIBLE;
             }
 
-            // 3. Attempt Delete
             int rowsDeleted = db.delete(TABLE_REGISTRATIONS, 
                     COL_REG_UID + "=? AND " + COL_REG_TID + "=?", 
                     new String[]{String.valueOf(userId), String.valueOf(tournamentId)});
@@ -485,6 +533,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 return CANCEL_NOT_FOUND;
             }
         } catch (Exception e) {
+            Log.e(TAG, "Error canceling tournament registration", e);
             return CANCEL_ERROR;
         } finally {
             db.endTransaction();
@@ -497,61 +546,99 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (user == null) return registeredTournaments;
 
         SQLiteDatabase db = this.getReadableDatabase();
-        
-        // Inner join to get Tournament details for the user's registrations
-        String query = "SELECT t.* FROM " + TABLE_TOURNAMENTS + " t " +
-                "INNER JOIN " + TABLE_REGISTRATIONS + " r ON t." + COL_TOURNAMENT_ID + " = r." + COL_REG_TID + " " +
-                "WHERE r." + COL_REG_UID + " = ? ORDER BY r." + COL_REG_DATE + " DESC";
+        Cursor cursor = null;
+        try {
+            String query = "SELECT t.* FROM " + TABLE_TOURNAMENTS + " t " +
+                    "INNER JOIN " + TABLE_REGISTRATIONS + " r ON t." + COL_TOURNAMENT_ID + " = r." + COL_REG_TID + " " +
+                    "WHERE r." + COL_REG_UID + " = ? ORDER BY r." + COL_REG_DATE + " DESC";
 
-        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(user.getId())});
+            cursor = db.rawQuery(query, new String[]{String.valueOf(user.getId())});
 
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                Tournament t = new Tournament();
-                t.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_ID)));
-                t.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_NAME)));
-                t.setSport(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_SPORT)));
-                t.setOrganizer(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_ORGANIZER)));
-                t.setStartDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_START)));
-                t.setEndDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_END)));
-                t.setVenue(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_VENUE)));
-                t.setMaxTeams(cursor.getInt(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_MAX_TEAMS)));
-                t.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_STATUS)));
-                registeredTournaments.add(t);
-            } while (cursor.moveToNext());
-        }
-        
-        if (cursor != null) {
-            cursor.close();
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    Tournament t = new Tournament();
+                    t.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_ID)));
+                    t.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_NAME)));
+                    t.setSport(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_SPORT)));
+                    t.setOrganizer(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_ORGANIZER)));
+                    t.setStartDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_START)));
+                    t.setEndDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_END)));
+                    t.setVenue(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_VENUE)));
+                    t.setMaxTeams(cursor.getInt(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_MAX_TEAMS)));
+                    t.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(COL_TOURNAMENT_STATUS)));
+                    registeredTournaments.add(t);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting player registrations", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
         return registeredTournaments;
     }
 
     // ==========================================
-    // EVENTS CRUD (Phase 4)
+    // EVENTS CRUD
     // ==========================================
 
     public long addEvent(Event e) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COL_EVENT_NAME, e.getName());
-        values.put(COL_EVENT_DESC, e.getDescription());
-        values.put(COL_EVENT_SPORT, e.getSport());
-        values.put(COL_EVENT_DATE, e.getEventDate());
-        values.put(COL_EVENT_VENUE, e.getVenue());
-        values.put(COL_EVENT_ORGANIZER, e.getOrganizer());
-        values.put(COL_EVENT_STATUS, e.getStatus());
-        long id = db.insert(TABLE_EVENTS, null, values);
-        db.close();
-        return id;
+        try {
+            ContentValues values = new ContentValues();
+            values.put(COL_EVENT_NAME, e.getName());
+            values.put(COL_EVENT_DESC, e.getDescription());
+            values.put(COL_EVENT_SPORT, e.getSport());
+            values.put(COL_EVENT_DATE, e.getEventDate());
+            values.put(COL_EVENT_VENUE, e.getVenue());
+            values.put(COL_EVENT_ORGANIZER, e.getOrganizer());
+            values.put(COL_EVENT_STATUS, e.getStatus());
+            return db.insert(TABLE_EVENTS, null, values);
+        } catch (Exception ex) {
+            Log.e(TAG, "Error adding event", ex);
+            return -1;
+        } finally {
+            db.close();
+        }
     }
 
     public List<Event> getAllEvents() {
         List<Event> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_EVENTS, null);
-        if (cursor.moveToFirst()) {
-            do {
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_EVENTS, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    Event e = new Event();
+                    e.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_EVENT_ID)));
+                    e.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_EVENT_NAME)));
+                    e.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(COL_EVENT_DESC)));
+                    e.setSport(cursor.getString(cursor.getColumnIndexOrThrow(COL_EVENT_SPORT)));
+                    e.setEventDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_EVENT_DATE)));
+                    e.setVenue(cursor.getString(cursor.getColumnIndexOrThrow(COL_EVENT_VENUE)));
+                    e.setOrganizer(cursor.getString(cursor.getColumnIndexOrThrow(COL_EVENT_ORGANIZER)));
+                    e.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(COL_EVENT_STATUS)));
+                    list.add(e);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting all events", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return list;
+    }
+
+    public Event getEventById(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            cursor = db.query(TABLE_EVENTS, null, COL_EVENT_ID + "=?", new String[]{String.valueOf(id)}, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
                 Event e = new Event();
                 e.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_EVENT_ID)));
                 e.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_EVENT_NAME)));
@@ -561,270 +648,368 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 e.setVenue(cursor.getString(cursor.getColumnIndexOrThrow(COL_EVENT_VENUE)));
                 e.setOrganizer(cursor.getString(cursor.getColumnIndexOrThrow(COL_EVENT_ORGANIZER)));
                 e.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(COL_EVENT_STATUS)));
-                list.add(e);
-            } while (cursor.moveToNext());
+                return e;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting event by ID", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
-        cursor.close();
-        return list;
-    }
-
-    public Event getEventById(int id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_EVENTS, null, COL_EVENT_ID + "=?", new String[]{String.valueOf(id)}, null, null, null);
-        if (cursor != null && cursor.moveToFirst()) {
-            Event e = new Event();
-            e.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_EVENT_ID)));
-            e.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_EVENT_NAME)));
-            e.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(COL_EVENT_DESC)));
-            e.setSport(cursor.getString(cursor.getColumnIndexOrThrow(COL_EVENT_SPORT)));
-            e.setEventDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_EVENT_DATE)));
-            e.setVenue(cursor.getString(cursor.getColumnIndexOrThrow(COL_EVENT_VENUE)));
-            e.setOrganizer(cursor.getString(cursor.getColumnIndexOrThrow(COL_EVENT_ORGANIZER)));
-            e.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(COL_EVENT_STATUS)));
-            cursor.close();
-            return e;
-        }
-        if (cursor != null) cursor.close();
         return null;
     }
 
     public int updateEvent(Event e) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COL_EVENT_NAME, e.getName());
-        values.put(COL_EVENT_DESC, e.getDescription());
-        values.put(COL_EVENT_SPORT, e.getSport());
-        values.put(COL_EVENT_DATE, e.getEventDate());
-        values.put(COL_EVENT_VENUE, e.getVenue());
-        values.put(COL_EVENT_ORGANIZER, e.getOrganizer());
-        values.put(COL_EVENT_STATUS, e.getStatus());
-        int rows = db.update(TABLE_EVENTS, values, COL_EVENT_ID + "=?", new String[]{String.valueOf(e.getId())});
-        db.close();
-        return rows;
+        try {
+            ContentValues values = new ContentValues();
+            values.put(COL_EVENT_NAME, e.getName());
+            values.put(COL_EVENT_DESC, e.getDescription());
+            values.put(COL_EVENT_SPORT, e.getSport());
+            values.put(COL_EVENT_DATE, e.getEventDate());
+            values.put(COL_EVENT_VENUE, e.getVenue());
+            values.put(COL_EVENT_ORGANIZER, e.getOrganizer());
+            values.put(COL_EVENT_STATUS, e.getStatus());
+            return db.update(TABLE_EVENTS, values, COL_EVENT_ID + "=?", new String[]{String.valueOf(e.getId())});
+        } catch (Exception ex) {
+            Log.e(TAG, "Error updating event", ex);
+            return 0;
+        } finally {
+            db.close();
+        }
     }
 
     public boolean deleteEvent(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int rowsDeleted = db.delete(TABLE_EVENTS, COL_EVENT_ID + "=?", new String[]{String.valueOf(id)});
-        db.close();
-        return rowsDeleted > 0;
-    }
-
-    // ==========================================
-    // TEAM CRUD (Phase 6A)
-    // ==========================================
-
-    public long addTeam(com.example.sporthub.models.Team team) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COL_TEAM_NAME, team.getName());
-        values.put(COL_TEAM_SPORT, team.getSport());
-        values.put(COL_TEAM_CAPTAIN, team.getCaptain());
-        values.put(COL_TEAM_CONTACT, team.getContactEmail());
-        values.put(COL_TEAM_TID, team.getTournamentId());
-        long id = db.insert(TABLE_TEAMS, null, values);
-        db.close();
-        return id;
-    }
-
-    public List<com.example.sporthub.models.Team> getAllTeams() {
-        List<com.example.sporthub.models.Team> list = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_TEAMS, null);
-        if (cursor.moveToFirst()) {
-            do {
-                com.example.sporthub.models.Team t = new com.example.sporthub.models.Team();
-                t.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_TEAM_ID)));
-                t.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_TEAM_NAME)));
-                t.setSport(cursor.getString(cursor.getColumnIndexOrThrow(COL_TEAM_SPORT)));
-                t.setCaptain(cursor.getString(cursor.getColumnIndexOrThrow(COL_TEAM_CAPTAIN)));
-                t.setContactEmail(cursor.getString(cursor.getColumnIndexOrThrow(COL_TEAM_CONTACT)));
-                t.setTournamentId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_TEAM_TID)));
-                list.add(t);
-            } while (cursor.moveToNext());
+        try {
+            int rowsDeleted = db.delete(TABLE_EVENTS, COL_EVENT_ID + "=?", new String[]{String.valueOf(id)});
+            return rowsDeleted > 0;
+        } catch (Exception e) {
+            Log.e(TAG, "Error deleting event", e);
+            return false;
+        } finally {
+            db.close();
         }
-        cursor.close();
+    }
+
+    // ==========================================
+    // TEAM CRUD
+    // ==========================================
+
+    public long addTeam(Team team) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            ContentValues values = new ContentValues();
+            values.put(COL_TEAM_NAME, team.getName());
+            values.put(COL_TEAM_SPORT, team.getSport());
+            values.put(COL_TEAM_CAPTAIN, team.getCaptain());
+            values.put(COL_TEAM_CONTACT, team.getContactEmail());
+            values.put(COL_TEAM_TID, team.getTournamentId());
+            return db.insert(TABLE_TEAMS, null, values);
+        } catch (Exception e) {
+            Log.e(TAG, "Error adding team", e);
+            return -1;
+        } finally {
+            db.close();
+        }
+    }
+
+    public List<Team> getAllTeams() {
+        List<Team> list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_TEAMS, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    Team t = new Team();
+                    t.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_TEAM_ID)));
+                    t.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_TEAM_NAME)));
+                    t.setSport(cursor.getString(cursor.getColumnIndexOrThrow(COL_TEAM_SPORT)));
+                    t.setCaptain(cursor.getString(cursor.getColumnIndexOrThrow(COL_TEAM_CAPTAIN)));
+                    t.setContactEmail(cursor.getString(cursor.getColumnIndexOrThrow(COL_TEAM_CONTACT)));
+                    t.setTournamentId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_TEAM_TID)));
+                    list.add(t);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting all teams", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
         return list;
     }
 
-    public int updateTeam(com.example.sporthub.models.Team team) {
+    public int updateTeam(Team team) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COL_TEAM_NAME, team.getName());
-        values.put(COL_TEAM_SPORT, team.getSport());
-        values.put(COL_TEAM_CAPTAIN, team.getCaptain());
-        values.put(COL_TEAM_CONTACT, team.getContactEmail());
-        values.put(COL_TEAM_TID, team.getTournamentId());
-        int rows = db.update(TABLE_TEAMS, values, COL_TEAM_ID + "=?", new String[]{String.valueOf(team.getId())});
-        db.close();
-        return rows;
-    }
-
-    public void deleteTeam(int id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_TEAMS, COL_TEAM_ID + "=?", new String[]{String.valueOf(id)});
-        db.close();
-    }
-
-    // ==========================================
-    // MATCH CRUD (Phase 7)
-    // ==========================================
-
-    public List<com.example.sporthub.models.Team> getTeamsByTournamentId(int tournamentId) {
-        List<com.example.sporthub.models.Team> list = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_TEAMS, null, COL_TEAM_TID + "=?", new String[]{String.valueOf(tournamentId)}, null, null, null);
-        if (cursor.moveToFirst()) {
-            do {
-                com.example.sporthub.models.Team t = new com.example.sporthub.models.Team();
-                t.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_TEAM_ID)));
-                t.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_TEAM_NAME)));
-                t.setSport(cursor.getString(cursor.getColumnIndexOrThrow(COL_TEAM_SPORT)));
-                t.setCaptain(cursor.getString(cursor.getColumnIndexOrThrow(COL_TEAM_CAPTAIN)));
-                t.setContactEmail(cursor.getString(cursor.getColumnIndexOrThrow(COL_TEAM_CONTACT)));
-                t.setTournamentId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_TEAM_TID)));
-                list.add(t);
-            } while (cursor.moveToNext());
+        try {
+            ContentValues values = new ContentValues();
+            values.put(COL_TEAM_NAME, team.getName());
+            values.put(COL_TEAM_SPORT, team.getSport());
+            values.put(COL_TEAM_CAPTAIN, team.getCaptain());
+            values.put(COL_TEAM_CONTACT, team.getContactEmail());
+            values.put(COL_TEAM_TID, team.getTournamentId());
+            return db.update(TABLE_TEAMS, values, COL_TEAM_ID + "=?", new String[]{String.valueOf(team.getId())});
+        } catch (Exception e) {
+            Log.e(TAG, "Error updating team", e);
+            return 0;
+        } finally {
+            db.close();
         }
-        cursor.close();
+    }
+
+    public boolean deleteTeam(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            String[] idArgs = new String[]{String.valueOf(id)};
+            // Delete dependent matches first (child-first deletion) to respect foreign keys
+            db.delete(TABLE_MATCHES, COL_MATCH_TEAM_A + "=? OR " + COL_MATCH_TEAM_B + "=?", idArgs);
+            int rowsDeleted = db.delete(TABLE_TEAMS, COL_TEAM_ID + "=?", idArgs);
+            if (rowsDeleted > 0) {
+                db.setTransactionSuccessful();
+                return true;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error deleting team", e);
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+        return false;
+    }
+
+    // ==========================================
+    // MATCH CRUD
+    // ==========================================
+
+    public List<Team> getTeamsByTournamentId(int tournamentId) {
+        List<Team> list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            cursor = db.query(TABLE_TEAMS, null, COL_TEAM_TID + "=?", new String[]{String.valueOf(tournamentId)}, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    Team t = new Team();
+                    t.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_TEAM_ID)));
+                    t.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_TEAM_NAME)));
+                    t.setSport(cursor.getString(cursor.getColumnIndexOrThrow(COL_TEAM_SPORT)));
+                    t.setCaptain(cursor.getString(cursor.getColumnIndexOrThrow(COL_TEAM_CAPTAIN)));
+                    t.setContactEmail(cursor.getString(cursor.getColumnIndexOrThrow(COL_TEAM_CONTACT)));
+                    t.setTournamentId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_TEAM_TID)));
+                    list.add(t);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting teams by tournament ID", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
         return list;
     }
 
-    public long addMatch(com.example.sporthub.models.Match m) {
+    public long addMatch(Match m) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COL_MATCH_TID, m.getTournamentId());
-        values.put(COL_MATCH_TEAM_A, m.getTeamAId());
-        values.put(COL_MATCH_TEAM_B, m.getTeamBId());
-        values.put(COL_MATCH_DATE, m.getMatchDate());
-        values.put(COL_MATCH_VENUE, m.getVenue());
-        values.put(COL_MATCH_STATUS, m.getStatus());
-        
-        if (m.getScoreA() != null) {
-            values.put(COL_MATCH_SCORE_A, m.getScoreA());
-        } else {
-            values.putNull(COL_MATCH_SCORE_A);
+        try {
+            ContentValues values = new ContentValues();
+            values.put(COL_MATCH_TID, m.getTournamentId());
+            values.put(COL_MATCH_TEAM_A, m.getTeamAId());
+            values.put(COL_MATCH_TEAM_B, m.getTeamBId());
+            values.put(COL_MATCH_DATE, m.getMatchDate());
+            values.put(COL_MATCH_VENUE, m.getVenue());
+            values.put(COL_MATCH_STATUS, m.getStatus());
+            
+            if (m.getScoreA() != null) {
+                values.put(COL_MATCH_SCORE_A, m.getScoreA());
+            } else {
+                values.putNull(COL_MATCH_SCORE_A);
+            }
+            
+            if (m.getScoreB() != null) {
+                values.put(COL_MATCH_SCORE_B, m.getScoreB());
+            } else {
+                values.putNull(COL_MATCH_SCORE_B);
+            }
+            
+            return db.insert(TABLE_MATCHES, null, values);
+        } catch (Exception e) {
+            Log.e(TAG, "Error adding match", e);
+            return -1;
+        } finally {
+            db.close();
         }
-        
-        if (m.getScoreB() != null) {
-            values.put(COL_MATCH_SCORE_B, m.getScoreB());
-        } else {
-            values.putNull(COL_MATCH_SCORE_B);
-        }
-        
-        long id = db.insert(TABLE_MATCHES, null, values);
-        db.close();
-        return id;
     }
 
-    public List<com.example.sporthub.models.Match> getAllMatches() {
-        List<com.example.sporthub.models.Match> list = new ArrayList<>();
+    public List<Match> getAllMatches() {
+        List<Match> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        
-        // Inner join to get the names of the teams and tournament for easy UI display
-        String query = "SELECT m.*, t1." + COL_TEAM_NAME + " AS teamA_name, t2." + COL_TEAM_NAME + " AS teamB_name, trn." + COL_TOURNAMENT_NAME + " AS tournament_name " +
-                "FROM " + TABLE_MATCHES + " m " +
-                "INNER JOIN " + TABLE_TEAMS + " t1 ON m." + COL_MATCH_TEAM_A + " = t1." + COL_TEAM_ID + " " +
-                "INNER JOIN " + TABLE_TEAMS + " t2 ON m." + COL_MATCH_TEAM_B + " = t2." + COL_TEAM_ID + " " +
-                "INNER JOIN " + TABLE_TOURNAMENTS + " trn ON m." + COL_MATCH_TID + " = trn." + COL_TOURNAMENT_ID + " " +
-                "ORDER BY m." + COL_MATCH_DATE + " DESC";
+        Cursor cursor = null;
+        try {
+            String query = "SELECT m.*, t1." + COL_TEAM_NAME + " AS teamA_name, t2." + COL_TEAM_NAME + " AS teamB_name, trn." + COL_TOURNAMENT_NAME + " AS tournament_name " +
+                    "FROM " + TABLE_MATCHES + " m " +
+                    "INNER JOIN " + TABLE_TEAMS + " t1 ON m." + COL_MATCH_TEAM_A + " = t1." + COL_TEAM_ID + " " +
+                    "INNER JOIN " + TABLE_TEAMS + " t2 ON m." + COL_MATCH_TEAM_B + " = t2." + COL_TEAM_ID + " " +
+                    "INNER JOIN " + TABLE_TOURNAMENTS + " trn ON m." + COL_MATCH_TID + " = trn." + COL_TOURNAMENT_ID + " " +
+                    "ORDER BY m." + COL_MATCH_DATE + " DESC";
 
-        Cursor cursor = db.rawQuery(query, null);
-        if (cursor.moveToFirst()) {
-            do {
-                com.example.sporthub.models.Match m = new com.example.sporthub.models.Match();
-                m.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_MATCH_ID)));
-                m.setTournamentId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_MATCH_TID)));
-                m.setTeamAId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_MATCH_TEAM_A)));
-                m.setTeamBId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_MATCH_TEAM_B)));
-                m.setMatchDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_MATCH_DATE)));
-                m.setVenue(cursor.getString(cursor.getColumnIndexOrThrow(COL_MATCH_VENUE)));
-                m.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(COL_MATCH_STATUS)));
-                
-                int scoreAIndex = cursor.getColumnIndexOrThrow(COL_MATCH_SCORE_A);
-                if (!cursor.isNull(scoreAIndex)) {
-                    m.setScoreA(cursor.getInt(scoreAIndex));
-                }
-                
-                int scoreBIndex = cursor.getColumnIndexOrThrow(COL_MATCH_SCORE_B);
-                if (!cursor.isNull(scoreBIndex)) {
-                    m.setScoreB(cursor.getInt(scoreBIndex));
-                }
-                
-                m.setTeamAName(cursor.getString(cursor.getColumnIndexOrThrow("teamA_name")));
-                m.setTeamBName(cursor.getString(cursor.getColumnIndexOrThrow("teamB_name")));
-                m.setTournamentName(cursor.getString(cursor.getColumnIndexOrThrow("tournament_name")));
-                
-                list.add(m);
-            } while (cursor.moveToNext());
+            cursor = db.rawQuery(query, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    Match m = new Match();
+                    m.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_MATCH_ID)));
+                    m.setTournamentId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_MATCH_TID)));
+                    m.setTeamAId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_MATCH_TEAM_A)));
+                    m.setTeamBId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_MATCH_TEAM_B)));
+                    m.setMatchDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_MATCH_DATE)));
+                    m.setVenue(cursor.getString(cursor.getColumnIndexOrThrow(COL_MATCH_VENUE)));
+                    m.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(COL_MATCH_STATUS)));
+                    
+                    int scoreAIndex = cursor.getColumnIndexOrThrow(COL_MATCH_SCORE_A);
+                    if (!cursor.isNull(scoreAIndex)) {
+                        m.setScoreA(cursor.getInt(scoreAIndex));
+                    }
+                    
+                    int scoreBIndex = cursor.getColumnIndexOrThrow(COL_MATCH_SCORE_B);
+                    if (!cursor.isNull(scoreBIndex)) {
+                        m.setScoreB(cursor.getInt(scoreBIndex));
+                    }
+                    
+                    m.setTeamAName(cursor.getString(cursor.getColumnIndexOrThrow("teamA_name")));
+                    m.setTeamBName(cursor.getString(cursor.getColumnIndexOrThrow("teamB_name")));
+                    m.setTournamentName(cursor.getString(cursor.getColumnIndexOrThrow("tournament_name")));
+                    
+                    list.add(m);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting all matches", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
-        cursor.close();
         return list;
     }
 
-    public int updateMatch(com.example.sporthub.models.Match m) {
+    public int updateMatch(Match m) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COL_MATCH_TID, m.getTournamentId());
-        values.put(COL_MATCH_TEAM_A, m.getTeamAId());
-        values.put(COL_MATCH_TEAM_B, m.getTeamBId());
-        values.put(COL_MATCH_DATE, m.getMatchDate());
-        values.put(COL_MATCH_VENUE, m.getVenue());
-        values.put(COL_MATCH_STATUS, m.getStatus());
-        
-        if (m.getScoreA() != null) {
-            values.put(COL_MATCH_SCORE_A, m.getScoreA());
-        } else {
-            values.putNull(COL_MATCH_SCORE_A);
+        try {
+            ContentValues values = new ContentValues();
+            values.put(COL_MATCH_TID, m.getTournamentId());
+            values.put(COL_MATCH_TEAM_A, m.getTeamAId());
+            values.put(COL_MATCH_TEAM_B, m.getTeamBId());
+            values.put(COL_MATCH_DATE, m.getMatchDate());
+            values.put(COL_MATCH_VENUE, m.getVenue());
+            values.put(COL_MATCH_STATUS, m.getStatus());
+            
+            if (m.getScoreA() != null) {
+                values.put(COL_MATCH_SCORE_A, m.getScoreA());
+            } else {
+                values.putNull(COL_MATCH_SCORE_A);
+            }
+            
+            if (m.getScoreB() != null) {
+                values.put(COL_MATCH_SCORE_B, m.getScoreB());
+            } else {
+                values.putNull(COL_MATCH_SCORE_B);
+            }
+            
+            return db.update(TABLE_MATCHES, values, COL_MATCH_ID + "=?", new String[]{String.valueOf(m.getId())});
+        } catch (Exception e) {
+            Log.e(TAG, "Error updating match", e);
+            return 0;
+        } finally {
+            db.close();
         }
-        
-        if (m.getScoreB() != null) {
-            values.put(COL_MATCH_SCORE_B, m.getScoreB());
-        } else {
-            values.putNull(COL_MATCH_SCORE_B);
-        }
-        
-        int rows = db.update(TABLE_MATCHES, values, COL_MATCH_ID + "=?", new String[]{String.valueOf(m.getId())});
-        db.close();
-        return rows;
     }
 
-    public void deleteMatch(int id) {
+    public boolean deleteMatch(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_MATCHES, COL_MATCH_ID + "=?", new String[]{String.valueOf(id)});
-        db.close();
+        try {
+            int rowsDeleted = db.delete(TABLE_MATCHES, COL_MATCH_ID + "=?", new String[]{String.valueOf(id)});
+            return rowsDeleted > 0;
+        } catch (Exception e) {
+            Log.e(TAG, "Error deleting match", e);
+            return false;
+        } finally {
+            db.close();
+        }
     }
 
     // ==========================================
-    // FITNESS TABLE (Phase 9)
+    // FITNESS TABLE
     // ==========================================
 
     public long addFitnessRecord(int userId, String activityType, int durationMins, double calories, String recordDate, String notes) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COL_FITNESS_UID, userId);
-        values.put(COL_FITNESS_ACTIVITY, activityType);
-        values.put(COL_FITNESS_DURATION, durationMins);
-        values.put(COL_FITNESS_CALORIES, calories);
-        values.put(COL_FITNESS_DATE, recordDate);
-        values.put(COL_FITNESS_NOTES, notes);
-        long id = db.insert(TABLE_FITNESS, null, values);
-        db.close();
-        return id;
+        try {
+            ContentValues values = new ContentValues();
+            values.put(COL_FITNESS_UID, userId);
+            values.put(COL_FITNESS_ACTIVITY, activityType);
+            values.put(COL_FITNESS_DURATION, durationMins);
+            values.put(COL_FITNESS_CALORIES, calories);
+            values.put(COL_FITNESS_DATE, recordDate);
+            values.put(COL_FITNESS_NOTES, notes);
+            return db.insert(TABLE_FITNESS, null, values);
+        } catch (Exception e) {
+            Log.e(TAG, "Error adding fitness record", e);
+            return -1;
+        } finally {
+            db.close();
+        }
     }
 
-    public long addFitnessRecord(com.example.sporthub.models.FitnessRecord r) {
+    public long addFitnessRecord(FitnessRecord r) {
         return addFitnessRecord(r.getUserId(), r.getActivityType(), r.getDurationMinutes(), r.getCaloriesBurned(), r.getRecordDate(), r.getNotes());
     }
 
-    public List<com.example.sporthub.models.FitnessRecord> getFitnessRecordsByUserId(int userId) {
-        List<com.example.sporthub.models.FitnessRecord> list = new ArrayList<>();
+    public List<FitnessRecord> getFitnessRecordsByUserId(int userId) {
+        List<FitnessRecord> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_FITNESS, null, COL_FITNESS_UID + "=?", new String[]{String.valueOf(userId)}, null, null, COL_FITNESS_DATE + " DESC");
-        
-        if (cursor.moveToFirst()) {
-            do {
-                com.example.sporthub.models.FitnessRecord r = new com.example.sporthub.models.FitnessRecord();
+        Cursor cursor = null;
+        try {
+            cursor = db.query(TABLE_FITNESS, null, COL_FITNESS_UID + "=?", new String[]{String.valueOf(userId)}, null, null, COL_FITNESS_DATE + " DESC");
+            
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    FitnessRecord r = new FitnessRecord();
+                    r.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_FITNESS_ID)));
+                    r.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_FITNESS_UID)));
+                    r.setActivityType(cursor.getString(cursor.getColumnIndexOrThrow(COL_FITNESS_ACTIVITY)));
+                    r.setDurationMinutes(cursor.getInt(cursor.getColumnIndexOrThrow(COL_FITNESS_DURATION)));
+                    r.setCaloriesBurned(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_FITNESS_CALORIES)));
+                    r.setRecordDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_FITNESS_DATE)));
+                    r.setNotes(cursor.getString(cursor.getColumnIndexOrThrow(COL_FITNESS_NOTES)));
+                    list.add(r);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting fitness records by user ID", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return list;
+    }
+
+    public FitnessRecord getFitnessRecordByIdAndUser(int recordId, int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            cursor = db.query(TABLE_FITNESS, null, 
+                    COL_FITNESS_ID + "=? AND " + COL_FITNESS_UID + "=?", 
+                    new String[]{String.valueOf(recordId), String.valueOf(userId)}, 
+                    null, null, null);
+                    
+            if (cursor != null && cursor.moveToFirst()) {
+                FitnessRecord r = new FitnessRecord();
                 r.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_FITNESS_ID)));
                 r.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_FITNESS_UID)));
                 r.setActivityType(cursor.getString(cursor.getColumnIndexOrThrow(COL_FITNESS_ACTIVITY)));
@@ -832,89 +1017,127 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 r.setCaloriesBurned(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_FITNESS_CALORIES)));
                 r.setRecordDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_FITNESS_DATE)));
                 r.setNotes(cursor.getString(cursor.getColumnIndexOrThrow(COL_FITNESS_NOTES)));
-                list.add(r);
-            } while (cursor.moveToNext());
+                return r;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting fitness record by ID and user", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
-        cursor.close();
-        return list;
-    }
-
-    public com.example.sporthub.models.FitnessRecord getFitnessRecordByIdAndUser(int recordId, int userId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_FITNESS, null, 
-                COL_FITNESS_ID + "=? AND " + COL_FITNESS_UID + "=?", 
-                new String[]{String.valueOf(recordId), String.valueOf(userId)}, 
-                null, null, null);
-                
-        if (cursor != null && cursor.moveToFirst()) {
-            com.example.sporthub.models.FitnessRecord r = new com.example.sporthub.models.FitnessRecord();
-            r.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_FITNESS_ID)));
-            r.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_FITNESS_UID)));
-            r.setActivityType(cursor.getString(cursor.getColumnIndexOrThrow(COL_FITNESS_ACTIVITY)));
-            r.setDurationMinutes(cursor.getInt(cursor.getColumnIndexOrThrow(COL_FITNESS_DURATION)));
-            r.setCaloriesBurned(cursor.getDouble(cursor.getColumnIndexOrThrow(COL_FITNESS_CALORIES)));
-            r.setRecordDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_FITNESS_DATE)));
-            r.setNotes(cursor.getString(cursor.getColumnIndexOrThrow(COL_FITNESS_NOTES)));
-            cursor.close();
-            return r;
-        }
-        if (cursor != null) cursor.close();
         return null;
     }
 
-    public int updateFitnessRecord(com.example.sporthub.models.FitnessRecord r) {
+    public int updateFitnessRecord(FitnessRecord r) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COL_FITNESS_ACTIVITY, r.getActivityType());
-        values.put(COL_FITNESS_DURATION, r.getDurationMinutes());
-        values.put(COL_FITNESS_CALORIES, r.getCaloriesBurned());
-        values.put(COL_FITNESS_DATE, r.getRecordDate());
-        values.put(COL_FITNESS_NOTES, r.getNotes());
-        
-        // Ensure update only affects records owned by the calling user
-        int rows = db.update(TABLE_FITNESS, values, 
-                COL_FITNESS_ID + "=? AND " + COL_FITNESS_UID + "=?", 
-                new String[]{String.valueOf(r.getId()), String.valueOf(r.getUserId())});
-        db.close();
-        return rows;
+        try {
+            ContentValues values = new ContentValues();
+            values.put(COL_FITNESS_ACTIVITY, r.getActivityType());
+            values.put(COL_FITNESS_DURATION, r.getDurationMinutes());
+            values.put(COL_FITNESS_CALORIES, r.getCaloriesBurned());
+            values.put(COL_FITNESS_DATE, r.getRecordDate());
+            values.put(COL_FITNESS_NOTES, r.getNotes());
+            
+            return db.update(TABLE_FITNESS, values, 
+                    COL_FITNESS_ID + "=? AND " + COL_FITNESS_UID + "=?", 
+                    new String[]{String.valueOf(r.getId()), String.valueOf(r.getUserId())});
+        } catch (Exception e) {
+            Log.e(TAG, "Error updating fitness record", e);
+            return 0;
+        } finally {
+            db.close();
+        }
     }
 
     public boolean deleteFitnessRecord(int recordId, int userId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int rows = db.delete(TABLE_FITNESS, 
-                COL_FITNESS_ID + "=? AND " + COL_FITNESS_UID + "=?", 
-                new String[]{String.valueOf(recordId), String.valueOf(userId)});
-        db.close();
-        return rows > 0;
+        try {
+            int rows = db.delete(TABLE_FITNESS, 
+                    COL_FITNESS_ID + "=? AND " + COL_FITNESS_UID + "=?", 
+                    new String[]{String.valueOf(recordId), String.valueOf(userId)});
+            return rows > 0;
+        } catch (Exception e) {
+            Log.e(TAG, "Error deleting fitness record", e);
+            return false;
+        } finally {
+            db.close();
+        }
     }
 
     // ==========================================
-    // WORKOUT PLANNER CRUD (Phase 10)
+    // WORKOUT PLANNER CRUD
     // ==========================================
 
-    public long addWorkoutPlan(com.example.sporthub.models.WorkoutPlan wp) {
+    public long addWorkoutPlan(WorkoutPlan wp) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COL_WORKOUT_UID, wp.getUserId());
-        values.put(COL_WORKOUT_TITLE, wp.getTitle());
-        values.put(COL_WORKOUT_ACTIVITY, wp.getActivityType());
-        values.put(COL_WORKOUT_DATE, wp.getPlannedDate());
-        values.put(COL_WORKOUT_DURATION, wp.getTargetDuration());
-        values.put(COL_WORKOUT_NOTES, wp.getNotes());
-        values.put(COL_WORKOUT_STATUS, wp.getStatus());
-        long id = db.insert(TABLE_WORKOUTS, null, values);
-        db.close();
-        return id;
+        try {
+            ContentValues values = new ContentValues();
+            values.put(COL_WORKOUT_UID, wp.getUserId());
+            values.put(COL_WORKOUT_TITLE, wp.getTitle());
+            values.put(COL_WORKOUT_ACTIVITY, wp.getActivityType());
+            values.put(COL_WORKOUT_DATE, wp.getPlannedDate());
+            values.put(COL_WORKOUT_DURATION, wp.getTargetDuration());
+            values.put(COL_WORKOUT_NOTES, wp.getNotes());
+            values.put(COL_WORKOUT_STATUS, wp.getStatus());
+            return db.insert(TABLE_WORKOUTS, null, values);
+        } catch (Exception e) {
+            Log.e(TAG, "Error adding workout plan", e);
+            return -1;
+        } finally {
+            db.close();
+        }
     }
 
-    public List<com.example.sporthub.models.WorkoutPlan> getWorkoutPlansByUserId(int userId) {
-        List<com.example.sporthub.models.WorkoutPlan> list = new ArrayList<>();
+    public List<WorkoutPlan> getWorkoutPlansByUserId(int userId) {
+        List<WorkoutPlan> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_WORKOUTS, null, COL_WORKOUT_UID + "=?", new String[]{String.valueOf(userId)}, null, null, COL_WORKOUT_DATE + " ASC");
-        
-        if (cursor.moveToFirst()) {
-            do {
-                com.example.sporthub.models.WorkoutPlan wp = new com.example.sporthub.models.WorkoutPlan();
+        Cursor cursor = null;
+        try {
+            cursor = db.query(TABLE_WORKOUTS, null, COL_WORKOUT_UID + "=?", new String[]{String.valueOf(userId)}, null, null, COL_WORKOUT_DATE + " ASC");
+            
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    WorkoutPlan wp = new WorkoutPlan();
+                    wp.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_WORKOUT_ID)));
+                    wp.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_WORKOUT_UID)));
+                    wp.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(COL_WORKOUT_TITLE)));
+                    wp.setActivityType(cursor.getString(cursor.getColumnIndexOrThrow(COL_WORKOUT_ACTIVITY)));
+                    wp.setPlannedDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_WORKOUT_DATE)));
+                    wp.setTargetDuration(cursor.getInt(cursor.getColumnIndexOrThrow(COL_WORKOUT_DURATION)));
+                    wp.setNotes(cursor.getString(cursor.getColumnIndexOrThrow(COL_WORKOUT_NOTES)));
+                    
+                    int statusIndex = cursor.getColumnIndex(COL_WORKOUT_STATUS);
+                    if (statusIndex != -1 && !cursor.isNull(statusIndex)) {
+                        wp.setStatus(cursor.getString(statusIndex));
+                    } else {
+                        wp.setStatus("Planned");
+                    }
+                    
+                    list.add(wp);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting workout plans by user ID", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return list;
+    }
+
+    public WorkoutPlan getWorkoutPlanByIdAndUser(int planId, int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            cursor = db.query(TABLE_WORKOUTS, null, 
+                    COL_WORKOUT_ID + "=? AND " + COL_WORKOUT_UID + "=?", 
+                    new String[]{String.valueOf(planId), String.valueOf(userId)}, 
+                    null, null, null);
+                    
+            if (cursor != null && cursor.moveToFirst()) {
+                WorkoutPlan wp = new WorkoutPlan();
                 wp.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_WORKOUT_ID)));
                 wp.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_WORKOUT_UID)));
                 wp.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(COL_WORKOUT_TITLE)));
@@ -927,71 +1150,56 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 if (statusIndex != -1 && !cursor.isNull(statusIndex)) {
                     wp.setStatus(cursor.getString(statusIndex));
                 } else {
-                    wp.setStatus("Planned"); // Fallback
+                    wp.setStatus("Planned");
                 }
                 
-                list.add(wp);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        return list;
-    }
-
-    public com.example.sporthub.models.WorkoutPlan getWorkoutPlanByIdAndUser(int planId, int userId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_WORKOUTS, null, 
-                COL_WORKOUT_ID + "=? AND " + COL_WORKOUT_UID + "=?", 
-                new String[]{String.valueOf(planId), String.valueOf(userId)}, 
-                null, null, null);
-                
-        if (cursor != null && cursor.moveToFirst()) {
-            com.example.sporthub.models.WorkoutPlan wp = new com.example.sporthub.models.WorkoutPlan();
-            wp.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_WORKOUT_ID)));
-            wp.setUserId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_WORKOUT_UID)));
-            wp.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(COL_WORKOUT_TITLE)));
-            wp.setActivityType(cursor.getString(cursor.getColumnIndexOrThrow(COL_WORKOUT_ACTIVITY)));
-            wp.setPlannedDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_WORKOUT_DATE)));
-            wp.setTargetDuration(cursor.getInt(cursor.getColumnIndexOrThrow(COL_WORKOUT_DURATION)));
-            wp.setNotes(cursor.getString(cursor.getColumnIndexOrThrow(COL_WORKOUT_NOTES)));
-            
-            int statusIndex = cursor.getColumnIndex(COL_WORKOUT_STATUS);
-            if (statusIndex != -1 && !cursor.isNull(statusIndex)) {
-                wp.setStatus(cursor.getString(statusIndex));
-            } else {
-                wp.setStatus("Planned");
+                return wp;
             }
-            
-            cursor.close();
-            return wp;
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting workout plan by ID and user", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
-        if (cursor != null) cursor.close();
         return null;
     }
 
-    public int updateWorkoutPlan(com.example.sporthub.models.WorkoutPlan wp) {
+    public int updateWorkoutPlan(WorkoutPlan wp) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COL_WORKOUT_TITLE, wp.getTitle());
-        values.put(COL_WORKOUT_ACTIVITY, wp.getActivityType());
-        values.put(COL_WORKOUT_DATE, wp.getPlannedDate());
-        values.put(COL_WORKOUT_DURATION, wp.getTargetDuration());
-        values.put(COL_WORKOUT_NOTES, wp.getNotes());
-        values.put(COL_WORKOUT_STATUS, wp.getStatus());
-        
-        int rows = db.update(TABLE_WORKOUTS, values, 
-                COL_WORKOUT_ID + "=? AND " + COL_WORKOUT_UID + "=?", 
-                new String[]{String.valueOf(wp.getId()), String.valueOf(wp.getUserId())});
-        db.close();
-        return rows;
+        try {
+            ContentValues values = new ContentValues();
+            values.put(COL_WORKOUT_TITLE, wp.getTitle());
+            values.put(COL_WORKOUT_ACTIVITY, wp.getActivityType());
+            values.put(COL_WORKOUT_DATE, wp.getPlannedDate());
+            values.put(COL_WORKOUT_DURATION, wp.getTargetDuration());
+            values.put(COL_WORKOUT_NOTES, wp.getNotes());
+            values.put(COL_WORKOUT_STATUS, wp.getStatus());
+            
+            return db.update(TABLE_WORKOUTS, values, 
+                    COL_WORKOUT_ID + "=? AND " + COL_WORKOUT_UID + "=?", 
+                    new String[]{String.valueOf(wp.getId()), String.valueOf(wp.getUserId())});
+        } catch (Exception e) {
+            Log.e(TAG, "Error updating workout plan", e);
+            return 0;
+        } finally {
+            db.close();
+        }
     }
 
     public boolean deleteWorkoutPlan(int planId, int userId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int rows = db.delete(TABLE_WORKOUTS, 
-                COL_WORKOUT_ID + "=? AND " + COL_WORKOUT_UID + "=?", 
-                new String[]{String.valueOf(planId), String.valueOf(userId)});
-        db.close();
-        return rows > 0;
+        try {
+            int rows = db.delete(TABLE_WORKOUTS, 
+                    COL_WORKOUT_ID + "=? AND " + COL_WORKOUT_UID + "=?", 
+                    new String[]{String.valueOf(planId), String.valueOf(userId)});
+            return rows > 0;
+        } catch (Exception e) {
+            Log.e(TAG, "Error deleting workout plan", e);
+            return false;
+        } finally {
+            db.close();
+        }
     }
 
 }

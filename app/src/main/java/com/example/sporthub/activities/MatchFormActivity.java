@@ -316,9 +316,13 @@ public class MatchFormActivity extends AppCompatActivity {
                 .setTitle("Delete Match")
                 .setMessage("Are you sure you want to delete this match?")
                 .setPositiveButton("Yes", (dialog, which) -> {
-                    dbHelper.deleteMatch(matchId);
-                    Toast.makeText(this, "Match Deleted", Toast.LENGTH_SHORT).show();
-                    finish();
+                    boolean success = dbHelper.deleteMatch(matchId);
+                    if (success) {
+                        Toast.makeText(this, "Match Deleted", Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        Toast.makeText(this, "Error deleting match", Toast.LENGTH_SHORT).show();
+                    }
                 })
                 .setNegativeButton("No", null)
                 .show();

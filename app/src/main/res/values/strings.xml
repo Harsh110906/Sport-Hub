@@ -10,4 +10,16 @@
     <string name="title_activity_player_tournament_list">PlayerTournamentListActivity</string>
     <string name="title_activity_player_workout_list">PlayerWorkoutListActivity</string>
     <string name="no_registrations">You haven\'t registered for any tournaments yet. Browse tournaments to register.</string>
+    <string name="title_admin_tournaments">Manage Tournaments</string>
+    <string name="title_admin_teams">Manage Teams</string>
+    <string name="title_admin_matches">Manage Matches</string>
+    <string name="title_admin_events">Manage Events</string>
+    <string name="title_tournaments">Tournaments</string>
+    <string name="title_matches">Matches</string>
+    <string name="title_events">Events</string>
+    <string name="title_fitness">Fitness Tracker</string>
+    <string name="title_workouts">Workout Plans</string>
+    <string name="title_profile">User Profile</string>
+    <string name="tagline">Your Ultimate Sports &amp; Fitness Hub</string>
+    <string name="action_logout">Logout</string>
 </resources>
