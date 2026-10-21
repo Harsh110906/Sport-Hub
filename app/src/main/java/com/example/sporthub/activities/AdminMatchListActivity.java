@@ -3,9 +3,13 @@ package com.example.sporthub.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -20,14 +24,28 @@ import com.example.sporthub.models.Match;
 import com.example.sporthub.utils.SessionManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class AdminMatchListActivity extends AppCompatActivity {
 
     private DatabaseHelper dbHelper;
     private ListView lvMatches;
     private TextView tvEmptyState;
-    private List<Match> matchList;
+    private MatchAdapter adapter;
+    private List<Match> masterMatchList;
+    private List<Match> filteredMatchList;
+    
+    private Spinner spnTournamentFilter;
+    private Spinner spnStatusFilter;
+    private Spinner spnSortMatches;
+    private Button btnClearFilters;
+    
+    private boolean isSpinnerInitialized = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,17 +76,60 @@ public class AdminMatchListActivity extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
         lvMatches = findViewById(R.id.lvAdminMatches);
         tvEmptyState = findViewById(R.id.tvEmptyState);
+        spnTournamentFilter = findViewById(R.id.spnAdminTournamentFilter);
+        spnStatusFilter = findViewById(R.id.spnAdminStatusFilter);
+        spnSortMatches = findViewById(R.id.spnAdminSortMatches);
+        btnClearFilters = findViewById(R.id.btnAdminClearFilters);
+        
         FloatingActionButton fabAddMatch = findViewById(R.id.fabAddMatch);
+
+        // Setup static status spinner
+        String[] statuses = {"All Statuses", "Scheduled", "Ongoing", "Completed"};
+        ArrayAdapter<String> statusAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, statuses);
+        spnStatusFilter.setAdapter(statusAdapter);
+
+        // Setup static sort spinner
+        String[] sortOptions = {"Latest First", "Earliest First"};
+        ArrayAdapter<String> sortAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, sortOptions);
+        spnSortMatches.setAdapter(sortAdapter);
 
         fabAddMatch.setOnClickListener(v -> {
             startActivity(new Intent(AdminMatchListActivity.this, MatchFormActivity.class));
         });
 
         lvMatches.setOnItemClickListener((parent, view, position, id) -> {
-            Match selected = matchList.get(position);
+            Match selected = filteredMatchList.get(position);
             Intent intent = new Intent(AdminMatchListActivity.this, MatchFormActivity.class);
             intent.putExtra("MATCH_ID", selected.getId());
             startActivity(intent);
+        });
+
+        setupFilterListeners();
+    }
+
+    private void setupFilterListeners() {
+        AdapterView.OnItemSelectedListener spinnerListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (isSpinnerInitialized) {
+                    applyFilters();
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        };
+
+        spnTournamentFilter.setOnItemSelectedListener(spinnerListener);
+        spnStatusFilter.setOnItemSelectedListener(spinnerListener);
+        spnSortMatches.setOnItemSelectedListener(spinnerListener);
+
+        btnClearFilters.setOnClickListener(v -> {
+            isSpinnerInitialized = false;
+            spnTournamentFilter.setSelection(0);
+            spnStatusFilter.setSelection(0);
+            spnSortMatches.setSelection(0);
+            isSpinnerInitialized = true;
+            applyFilters();
         });
     }
 
@@ -79,15 +140,100 @@ public class AdminMatchListActivity extends AppCompatActivity {
     }
 
     private void loadMatches() {
-        matchList = dbHelper.getAllMatches();
-        if (matchList.isEmpty()) {
+        masterMatchList = dbHelper.getAllMatches();
+        
+        // Dynamically populate Tournament Spinner based on available data
+        Set<String> tournaments = new HashSet<>();
+        for (Match m : masterMatchList) {
+            if (m.getTournamentName() != null && !m.getTournamentName().trim().isEmpty()) {
+                tournaments.add(m.getTournamentName().trim());
+            }
+        }
+        List<String> tournamentOptions = new ArrayList<>();
+        tournamentOptions.add("All Tournaments");
+        tournamentOptions.addAll(tournaments);
+        
+        // Preserve selection if possible
+        String currentSelection = null;
+        if (spnTournamentFilter.getSelectedItem() != null) {
+            currentSelection = spnTournamentFilter.getSelectedItem().toString();
+        }
+
+        isSpinnerInitialized = false;
+        ArrayAdapter<String> tAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, tournamentOptions);
+        spnTournamentFilter.setAdapter(tAdapter);
+        
+        if (currentSelection != null && tournamentOptions.contains(currentSelection)) {
+            spnTournamentFilter.setSelection(tournamentOptions.indexOf(currentSelection));
+        } else {
+            spnTournamentFilter.setSelection(0);
+        }
+        isSpinnerInitialized = true;
+
+        if (adapter == null) {
+            filteredMatchList = new ArrayList<>(masterMatchList);
+            adapter = new MatchAdapter(this, filteredMatchList);
+            lvMatches.setAdapter(adapter);
+        }
+        
+        applyFilters();
+    }
+
+    private void applyFilters() {
+        if (masterMatchList == null) return;
+
+        String selectedTournament = spnTournamentFilter.getSelectedItem() != null ? spnTournamentFilter.getSelectedItem().toString() : "All Tournaments";
+        String selectedStatus = spnStatusFilter.getSelectedItem() != null ? spnStatusFilter.getSelectedItem().toString() : "All Statuses";
+        String selectedSort = spnSortMatches.getSelectedItem() != null ? spnSortMatches.getSelectedItem().toString() : "Latest First";
+
+        filteredMatchList = new ArrayList<>();
+
+        for (Match m : masterMatchList) {
+            boolean matchesTournament = true;
+            boolean matchesStatus = true;
+
+            if (!"All Tournaments".equals(selectedTournament)) {
+                matchesTournament = m.getTournamentName() != null && m.getTournamentName().trim().equalsIgnoreCase(selectedTournament);
+            }
+
+            if (!"All Statuses".equals(selectedStatus)) {
+                matchesStatus = m.getStatus() != null && m.getStatus().equalsIgnoreCase(selectedStatus);
+            }
+
+            if (matchesTournament && matchesStatus) {
+                filteredMatchList.add(m);
+            }
+        }
+        
+        // Sorting logic based on date string "yyyy-MM-dd"
+        Collections.sort(filteredMatchList, new Comparator<Match>() {
+            @Override
+            public int compare(Match m1, Match m2) {
+                String d1 = m1.getMatchDate() != null ? m1.getMatchDate() : "";
+                String d2 = m2.getMatchDate() != null ? m2.getMatchDate() : "";
+                if ("Earliest First".equals(selectedSort)) {
+                    return d1.compareTo(d2); // ASC
+                } else {
+                    return d2.compareTo(d1); // DESC
+                }
+            }
+        });
+
+        if (filteredMatchList.isEmpty()) {
+            if (masterMatchList.isEmpty()) {
+                tvEmptyState.setText("No matches found. Click + to schedule one.");
+            } else {
+                tvEmptyState.setText("No matches match your filters.");
+            }
             tvEmptyState.setVisibility(View.VISIBLE);
             lvMatches.setVisibility(View.GONE);
         } else {
             tvEmptyState.setVisibility(View.GONE);
             lvMatches.setVisibility(View.VISIBLE);
-            MatchAdapter adapter = new MatchAdapter(this, matchList);
-            lvMatches.setAdapter(adapter);
+        }
+
+        if (adapter != null) {
+            adapter.updateData(filteredMatchList);
         }
     }
 }

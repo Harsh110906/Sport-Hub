@@ -52,4 +52,12 @@ public class MatchAdapter extends ArrayAdapter<Match> {
 
         return convertView;
     }
+
+    public void updateData(List<Match> newMatches) {
+        clear();
+        if (newMatches != null) {
+            addAll(newMatches);
+        }
+        notifyDataSetChanged();
+    }
 }
