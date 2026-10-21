@@ -154,8 +154,18 @@ public class WorkoutFormActivity extends AppCompatActivity {
         String activityType = spnActivity.getSelectedItem().toString();
         String status = spnStatus.getSelectedItem().toString();
 
-        if (TextUtils.isEmpty(title) || TextUtils.isEmpty(date) || TextUtils.isEmpty(durationStr)) {
-            Toast.makeText(this, "Title, Date, and Duration are required.", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(title)) {
+            etTitle.setError("Title is required");
+            etTitle.requestFocus();
+            return;
+        }
+        if (TextUtils.isEmpty(durationStr)) {
+            etDuration.setError("Target Duration is required");
+            etDuration.requestFocus();
+            return;
+        }
+        if (TextUtils.isEmpty(date)) {
+            Toast.makeText(this, "Planned Date is required.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -164,10 +174,12 @@ public class WorkoutFormActivity extends AppCompatActivity {
             duration = Integer.parseInt(durationStr);
             if (duration <= 0) {
                 etDuration.setError("Must be positive");
+                etDuration.requestFocus();
                 return;
             }
         } catch (NumberFormatException e) {
             etDuration.setError("Invalid number");
+            etDuration.requestFocus();
             return;
         }
 

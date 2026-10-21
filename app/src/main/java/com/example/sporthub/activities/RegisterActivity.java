@@ -16,6 +16,7 @@ import com.example.sporthub.models.User;
 import com.example.sporthub.utils.SessionManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import android.util.Patterns;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -59,22 +60,32 @@ public class RegisterActivity extends AppCompatActivity {
 
         if (TextUtils.isEmpty(name)) {
             etName.setError("Name is required");
+            etName.requestFocus();
             return;
         }
         if (TextUtils.isEmpty(email)) {
             etEmail.setError("Email is required");
+            etEmail.requestFocus();
+            return;
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            etEmail.setError("Please enter a valid email address");
+            etEmail.requestFocus();
             return;
         }
         if (TextUtils.isEmpty(password)) {
             etPassword.setError("Password is required");
+            etPassword.requestFocus();
             return;
         }
         if (password.length() < 6) {
             etPassword.setError("Password must be at least 6 characters");
+            etPassword.requestFocus();
             return;
         }
         if (!password.equals(confirmPassword)) {
             etConfirmPassword.setError("Passwords do not match");
+            etConfirmPassword.requestFocus();
             return;
         }
 

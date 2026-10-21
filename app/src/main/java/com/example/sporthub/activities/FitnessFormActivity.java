@@ -142,8 +142,13 @@ public class FitnessFormActivity extends AppCompatActivity {
         String notes = etNotes.getText().toString().trim();
         String activityType = spnActivityType.getSelectedItem().toString();
 
-        if (TextUtils.isEmpty(date) || TextUtils.isEmpty(durationStr)) {
-            Toast.makeText(this, "Date and Duration are required.", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(durationStr)) {
+            etDuration.setError("Duration is required");
+            etDuration.requestFocus();
+            return;
+        }
+        if (TextUtils.isEmpty(date)) {
+            Toast.makeText(this, "Date is required.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -153,10 +158,12 @@ public class FitnessFormActivity extends AppCompatActivity {
             duration = Integer.parseInt(durationStr);
             if (duration <= 0) {
                 etDuration.setError("Must be positive");
+                etDuration.requestFocus();
                 return;
             }
         } catch (NumberFormatException e) {
             etDuration.setError("Invalid number");
+            etDuration.requestFocus();
             return;
         }
 
@@ -165,10 +172,12 @@ public class FitnessFormActivity extends AppCompatActivity {
                 calories = Double.parseDouble(calStr);
                 if (calories < 0) {
                     etCalories.setError("Cannot be negative");
+                    etCalories.requestFocus();
                     return;
                 }
             } catch (NumberFormatException e) {
                 etCalories.setError("Invalid number");
+                etCalories.requestFocus();
                 return;
             }
         }

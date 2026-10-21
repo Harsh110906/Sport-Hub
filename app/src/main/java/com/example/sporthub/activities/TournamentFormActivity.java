@@ -141,8 +141,19 @@ public class TournamentFormActivity extends AppCompatActivity {
         String endDate = tvEndDate.getText().toString().trim();
         String status = spnStatus.getSelectedItem().toString();
 
-        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(sport) || TextUtils.isEmpty(startDate) || TextUtils.isEmpty(endDate) || TextUtils.isEmpty(maxTeamsStr)) {
-            Toast.makeText(this, "Please fill all required fields (*)", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(name)) {
+            etName.setError("Tournament name is required");
+            etName.requestFocus();
+            return;
+        }
+        if (TextUtils.isEmpty(sport)) {
+            etSport.setError("Sport is required");
+            etSport.requestFocus();
+            return;
+        }
+        if (TextUtils.isEmpty(maxTeamsStr)) {
+            etMaxTeams.setError("Max teams is required");
+            etMaxTeams.requestFocus();
             return;
         }
 
@@ -151,10 +162,21 @@ public class TournamentFormActivity extends AppCompatActivity {
             maxTeams = Integer.parseInt(maxTeamsStr);
             if (maxTeams <= 0) {
                 etMaxTeams.setError("Must be positive integer");
+                etMaxTeams.requestFocus();
                 return;
             }
         } catch (NumberFormatException e) {
             etMaxTeams.setError("Invalid number");
+            etMaxTeams.requestFocus();
+            return;
+        }
+
+        if (TextUtils.isEmpty(startDate)) {
+            Toast.makeText(this, "Start date is required", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (TextUtils.isEmpty(endDate)) {
+            Toast.makeText(this, "End date is required", Toast.LENGTH_SHORT).show();
             return;
         }
 

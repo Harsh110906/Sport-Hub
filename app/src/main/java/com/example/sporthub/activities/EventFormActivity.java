@@ -134,8 +134,18 @@ public class EventFormActivity extends AppCompatActivity {
         String organizer = etOrganizer.getText().toString().trim();
         String status = spnStatus.getSelectedItem().toString();
 
-        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(sport) || TextUtils.isEmpty(date)) {
-            Toast.makeText(this, "Name, Sport, and Date are required.", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(name)) {
+            etName.setError("Event Name is required");
+            etName.requestFocus();
+            return;
+        }
+        if (TextUtils.isEmpty(sport)) {
+            etSport.setError("Sport is required");
+            etSport.requestFocus();
+            return;
+        }
+        if (TextUtils.isEmpty(date)) {
+            Toast.makeText(this, "Event Date is required", Toast.LENGTH_SHORT).show();
             return;
         }
 

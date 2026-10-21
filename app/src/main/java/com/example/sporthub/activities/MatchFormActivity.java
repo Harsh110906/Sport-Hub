@@ -232,8 +232,13 @@ public class MatchFormActivity extends AppCompatActivity {
         String venue = etVenue.getText().toString().trim();
         String status = spnStatus.getSelectedItem().toString();
 
-        if (TextUtils.isEmpty(date) || TextUtils.isEmpty(venue)) {
-            Toast.makeText(this, "Date and Venue are required.", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(venue)) {
+            etVenue.setError("Venue is required");
+            etVenue.requestFocus();
+            return;
+        }
+        if (TextUtils.isEmpty(date)) {
+            Toast.makeText(this, "Match Date is required.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -248,10 +253,12 @@ public class MatchFormActivity extends AppCompatActivity {
                 scoreA = Integer.parseInt(strScoreA);
                 if (scoreA < 0) {
                     etScoreA.setError("Must be non-negative");
+                    etScoreA.requestFocus();
                     return;
                 }
             } catch (NumberFormatException e) {
                 etScoreA.setError("Invalid number");
+                etScoreA.requestFocus();
                 return;
             }
         }
@@ -261,10 +268,12 @@ public class MatchFormActivity extends AppCompatActivity {
                 scoreB = Integer.parseInt(strScoreB);
                 if (scoreB < 0) {
                     etScoreB.setError("Must be non-negative");
+                    etScoreB.requestFocus();
                     return;
                 }
             } catch (NumberFormatException e) {
                 etScoreB.setError("Invalid number");
+                etScoreB.requestFocus();
                 return;
             }
         }
