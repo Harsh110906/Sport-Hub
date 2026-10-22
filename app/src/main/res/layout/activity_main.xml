@@ -5,17 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/background">
+    android:background="?android:attr/colorBackground">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/primary"
+        android:background="?attr/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="@string/app_name"
-        app:titleTextColor="@color/white" />
+        app:titleTextColor="?attr/colorOnPrimary" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -33,8 +33,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Welcome!"
-                android:textColor="@color/primary_dark"
-                android:textSize="28sp"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textAppearance="?attr/textAppearanceHeadlineMedium"
                 android:textStyle="bold"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="4dp" />
@@ -44,8 +44,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Role: Unknown"
-                android:textColor="@color/text_secondary"
-                android:textSize="16sp"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:textStyle="bold"
                 android:layout_marginBottom="32dp" />
 
@@ -61,11 +61,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Management Tools"
-                    android:textSize="18sp"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
                     android:textStyle="bold"
-                    android:textColor="@color/primary_dark"
+                    android:textColor="?attr/colorPrimary"
                     android:layout_marginStart="8dp"
-                    android:layout_marginBottom="12dp"/>
+                    android:layout_marginBottom="12dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -73,47 +73,91 @@
                     android:orientation="horizontal"
                     android:baselineAligned="false">
 
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cardAdminTournaments"
                         android:layout_width="0dp"
-                        android:layout_height="120dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_margin="8dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:text="@string/title_admin_tournaments"
-                            android:textColor="@color/text_primary"
-                            android:textStyle="bold"
-                            android:drawableTop="@android:drawable/ic_menu_sort_by_size"
-                            app:drawableTint="@color/primary"
-                            android:drawablePadding="8dp"
-                            android:paddingTop="24dp"/>
-                    </androidx.cardview.widget.CardView>
+                        app:cardCornerRadius="@dimen/card_radius"
+                        app:cardBackgroundColor="?attr/colorSurface"
+                        app:cardElevation="@dimen/card_elevation">
 
-                    <androidx.cardview.widget.CardView
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp"
+                            android:minHeight="120dp">
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_dash_tournament"
+                                app:tint="?attr/colorPrimary"
+                                android:importantForAccessibility="no"
+                                android:layout_marginBottom="8dp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/title_admin_tournaments"
+                                android:textColor="?android:attr/textColorPrimary"
+                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:textAlignment="center"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Create &amp; manage"
+                                android:textColor="?android:attr/textColorSecondary"
+                                android:textAppearance="?attr/textAppearanceBodySmall"
+                                android:textAlignment="center"
+                                android:layout_marginTop="4dp"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cardAdminTeams"
                         android:layout_width="0dp"
-                        android:layout_height="120dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_margin="8dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp">
-                        <TextView
+                        app:cardCornerRadius="@dimen/card_radius"
+                        app:cardBackgroundColor="?attr/colorSurface"
+                        app:cardElevation="@dimen/card_elevation">
+
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
                             android:gravity="center"
-                            android:text="@string/title_admin_teams"
-                            android:textColor="@color/text_primary"
-                            android:textStyle="bold"
-                            android:drawableTop="@android:drawable/ic_menu_myplaces"
-                            app:drawableTint="@color/primary"
-                            android:drawablePadding="8dp"
-                            android:paddingTop="24dp"/>
-                    </androidx.cardview.widget.CardView>
+                            android:padding="16dp"
+                            android:minHeight="120dp">
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_dash_team"
+                                app:tint="?attr/colorPrimary"
+                                android:importantForAccessibility="no"
+                                android:layout_marginBottom="8dp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/title_admin_teams"
+                                android:textColor="?android:attr/textColorPrimary"
+                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:textAlignment="center"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Groups &amp; rosters"
+                                android:textColor="?android:attr/textColorSecondary"
+                                android:textAppearance="?attr/textAppearanceBodySmall"
+                                android:textAlignment="center"
+                                android:layout_marginTop="4dp"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
 
                 <LinearLayout
@@ -122,80 +166,139 @@
                     android:orientation="horizontal"
                     android:baselineAligned="false">
 
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cardAdminMatches"
                         android:layout_width="0dp"
-                        android:layout_height="120dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_margin="8dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:text="@string/title_admin_matches"
-                            android:textColor="@color/text_primary"
-                            android:textStyle="bold"
-                            android:drawableTop="@android:drawable/ic_menu_today"
-                            app:drawableTint="@color/primary"
-                            android:drawablePadding="8dp"
-                            android:paddingTop="24dp"/>
-                    </androidx.cardview.widget.CardView>
+                        app:cardCornerRadius="@dimen/card_radius"
+                        app:cardBackgroundColor="?attr/colorSurface"
+                        app:cardElevation="@dimen/card_elevation">
 
-                    <androidx.cardview.widget.CardView
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp"
+                            android:minHeight="120dp">
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_dash_match"
+                                app:tint="?attr/colorPrimary"
+                                android:importantForAccessibility="no"
+                                android:layout_marginBottom="8dp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/title_admin_matches"
+                                android:textColor="?android:attr/textColorPrimary"
+                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:textAlignment="center"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Schedule &amp; score"
+                                android:textColor="?android:attr/textColorSecondary"
+                                android:textAppearance="?attr/textAppearanceBodySmall"
+                                android:textAlignment="center"
+                                android:layout_marginTop="4dp"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cardAdminEvents"
                         android:layout_width="0dp"
-                        android:layout_height="120dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_margin="8dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp">
-                        <TextView
+                        app:cardCornerRadius="@dimen/card_radius"
+                        app:cardBackgroundColor="?attr/colorSurface"
+                        app:cardElevation="@dimen/card_elevation">
+
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
                             android:gravity="center"
-                            android:text="@string/title_admin_events"
-                            android:textColor="@color/text_primary"
-                            android:textStyle="bold"
-                            android:drawableTop="@android:drawable/ic_menu_compass"
-                            app:drawableTint="@color/primary"
-                            android:drawablePadding="8dp"
-                            android:paddingTop="24dp"/>
-                    </androidx.cardview.widget.CardView>
+                            android:padding="16dp"
+                            android:minHeight="120dp">
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_dash_event"
+                                app:tint="?attr/colorPrimary"
+                                android:importantForAccessibility="no"
+                                android:layout_marginBottom="8dp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/title_admin_events"
+                                android:textColor="?android:attr/textColorPrimary"
+                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:textAlignment="center"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Organize events"
+                                android:textColor="?android:attr/textColorSecondary"
+                                android:textAppearance="?attr/textAppearanceBodySmall"
+                                android:textAlignment="center"
+                                android:layout_marginTop="4dp"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
 
                 <!-- Admin Export Data (Full Width Secondary) -->
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardAdminExport"
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp">
+                    app:cardCornerRadius="@dimen/card_radius"
+                    app:cardBackgroundColor="?attr/colorSurface"
+                    app:cardElevation="@dimen/card_elevation">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:padding="16dp"
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@android:drawable/ic_menu_save"
-                            app:tint="@color/primary"
-                            android:layout_marginEnd="12dp" />
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_dash_export"
+                            app:tint="?attr/colorPrimary"
+                            android:layout_marginEnd="16dp"
+                            android:importantForAccessibility="no"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Export Data (CSV)"
-                            android:textColor="@color/text_primary"
-                            android:textStyle="bold"
-                            android:textSize="16sp" />
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Export Data (CSV)"
+                                android:textColor="?android:attr/textColorPrimary"
+                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Download CSVs"
+                                android:textColor="?android:attr/textColorSecondary"
+                                android:textAppearance="?attr/textAppearanceBodySmall"
+                                android:layout_marginTop="2dp" />
+                        </LinearLayout>
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
             <!-- Player Dashboard Cards -->
@@ -210,44 +313,60 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="My Hub"
-                    android:textSize="18sp"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
                     android:textStyle="bold"
-                    android:textColor="@color/primary_dark"
+                    android:textColor="?attr/colorPrimary"
                     android:layout_marginStart="8dp"
-                    android:layout_marginBottom="12dp"/>
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginTop="8dp"/>
 
                 <!-- Player My Registrations (Prominent Primary Card) -->
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardPlayerRegistrations"
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp"
-                    app:cardBackgroundColor="@color/primary">
+                    app:cardCornerRadius="@dimen/card_radius"
+                    app:cardBackgroundColor="?attr/colorPrimary"
+                    app:cardElevation="@dimen/card_elevation">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:padding="16dp"
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@android:drawable/ic_menu_save"
-                            app:tint="@color/white"
-                            android:layout_marginEnd="12dp" />
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_dash_registration"
+                            app:tint="@color/text_on_primary"
+                            android:layout_marginEnd="16dp"
+                            android:importantForAccessibility="no" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="My Registrations"
-                            android:textColor="@color/white"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="My Registrations"
+                                android:textColor="@color/text_on_primary"
+                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Your signed-up lists"
+                                android:textColor="@color/text_on_primary"
+                                android:textAppearance="?attr/textAppearanceBodySmall"
+                                android:alpha="0.8"
+                                android:layout_marginTop="2dp"/>
+                        </LinearLayout>
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                </com.google.android.material.card.MaterialCardView>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -255,47 +374,91 @@
                     android:orientation="horizontal"
                     android:baselineAligned="false">
 
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cardPlayerTournaments"
                         android:layout_width="0dp"
-                        android:layout_height="120dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_margin="8dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:text="@string/title_tournaments"
-                            android:textColor="@color/text_primary"
-                            android:textStyle="bold"
-                            android:drawableTop="@android:drawable/ic_menu_sort_by_size"
-                            app:drawableTint="@color/primary"
-                            android:drawablePadding="8dp"
-                            android:paddingTop="24dp"/>
-                    </androidx.cardview.widget.CardView>
+                        app:cardCornerRadius="@dimen/card_radius"
+                        app:cardBackgroundColor="?attr/colorSurface"
+                        app:cardElevation="@dimen/card_elevation">
 
-                    <androidx.cardview.widget.CardView
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp"
+                            android:minHeight="120dp">
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_dash_tournament"
+                                app:tint="?attr/colorPrimary"
+                                android:importantForAccessibility="no"
+                                android:layout_marginBottom="8dp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/title_tournaments"
+                                android:textColor="?android:attr/textColorPrimary"
+                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:textAlignment="center"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Browse &amp; join"
+                                android:textColor="?android:attr/textColorSecondary"
+                                android:textAppearance="?attr/textAppearanceBodySmall"
+                                android:textAlignment="center"
+                                android:layout_marginTop="4dp"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cardPlayerMatches"
                         android:layout_width="0dp"
-                        android:layout_height="120dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_margin="8dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp">
-                        <TextView
+                        app:cardCornerRadius="@dimen/card_radius"
+                        app:cardBackgroundColor="?attr/colorSurface"
+                        app:cardElevation="@dimen/card_elevation">
+
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
                             android:gravity="center"
-                            android:text="@string/title_matches"
-                            android:textColor="@color/text_primary"
-                            android:textStyle="bold"
-                            android:drawableTop="@android:drawable/ic_menu_today"
-                            app:drawableTint="@color/primary"
-                            android:drawablePadding="8dp"
-                            android:paddingTop="24dp"/>
-                    </androidx.cardview.widget.CardView>
+                            android:padding="16dp"
+                            android:minHeight="120dp">
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_dash_match"
+                                app:tint="?attr/colorPrimary"
+                                android:importantForAccessibility="no"
+                                android:layout_marginBottom="8dp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/title_matches"
+                                android:textColor="?android:attr/textColorPrimary"
+                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:textAlignment="center"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="View schedules"
+                                android:textColor="?android:attr/textColorSecondary"
+                                android:textAppearance="?attr/textAppearanceBodySmall"
+                                android:textAlignment="center"
+                                android:layout_marginTop="4dp"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
 
                 <LinearLayout
@@ -304,114 +467,188 @@
                     android:orientation="horizontal"
                     android:baselineAligned="false">
 
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cardPlayerEvents"
                         android:layout_width="0dp"
-                        android:layout_height="120dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_margin="8dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:text="@string/title_events"
-                            android:textColor="@color/text_primary"
-                            android:textStyle="bold"
-                            android:drawableTop="@android:drawable/ic_menu_compass"
-                            app:drawableTint="@color/primary"
-                            android:drawablePadding="8dp"
-                            android:paddingTop="24dp"/>
-                    </androidx.cardview.widget.CardView>
+                        app:cardCornerRadius="@dimen/card_radius"
+                        app:cardBackgroundColor="?attr/colorSurface"
+                        app:cardElevation="@dimen/card_elevation">
 
-                    <androidx.cardview.widget.CardView
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="16dp"
+                            android:minHeight="120dp">
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_dash_event"
+                                app:tint="?attr/colorPrimary"
+                                android:importantForAccessibility="no"
+                                android:layout_marginBottom="8dp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/title_events"
+                                android:textColor="?android:attr/textColorPrimary"
+                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:textAlignment="center"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Find local events"
+                                android:textColor="?android:attr/textColorSecondary"
+                                android:textAppearance="?attr/textAppearanceBodySmall"
+                                android:textAlignment="center"
+                                android:layout_marginTop="4dp"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cardPlayerFitness"
                         android:layout_width="0dp"
-                        android:layout_height="120dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_margin="8dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp">
-                        <TextView
+                        app:cardCornerRadius="@dimen/card_radius"
+                        app:cardBackgroundColor="?attr/colorSurface"
+                        app:cardElevation="@dimen/card_elevation">
+
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
                             android:gravity="center"
-                            android:text="@string/title_fitness"
-                            android:textColor="@color/text_primary"
-                            android:textStyle="bold"
-                            android:drawableTop="@android:drawable/ic_menu_directions"
-                            app:drawableTint="@color/primary"
-                            android:drawablePadding="8dp"
-                            android:paddingTop="24dp"/>
-                    </androidx.cardview.widget.CardView>
+                            android:padding="16dp"
+                            android:minHeight="120dp">
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_dash_fitness"
+                                app:tint="?attr/colorPrimary"
+                                android:importantForAccessibility="no"
+                                android:layout_marginBottom="8dp"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/title_fitness"
+                                android:textColor="?android:attr/textColorPrimary"
+                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:textAlignment="center"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Log your activities"
+                                android:textColor="?android:attr/textColorSecondary"
+                                android:textAppearance="?attr/textAppearanceBodySmall"
+                                android:textAlignment="center"
+                                android:layout_marginTop="4dp"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
 
                 <!-- Player Workout Plan (Full Width Secondary) -->
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardPlayerWorkout"
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp">
+                    app:cardCornerRadius="@dimen/card_radius"
+                    app:cardBackgroundColor="?attr/colorSurface"
+                    app:cardElevation="@dimen/card_elevation">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:padding="16dp"
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@android:drawable/ic_menu_edit"
-                            app:tint="@color/primary"
-                            android:layout_marginEnd="12dp" />
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_dash_workout"
+                            app:tint="?attr/colorPrimary"
+                            android:layout_marginEnd="16dp"
+                            android:importantForAccessibility="no" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/title_workouts"
-                            android:textColor="@color/text_primary"
-                            android:textStyle="bold"
-                            android:textSize="16sp" />
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/title_workouts"
+                                android:textColor="?android:attr/textColorPrimary"
+                                android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Plan your routines"
+                                android:textColor="?android:attr/textColorSecondary"
+                                android:textAppearance="?attr/textAppearanceBodySmall"
+                                android:layout_marginTop="2dp" />
+                        </LinearLayout>
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
             <!-- Shared Profile Card (Full Width) -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardSharedProfile"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:layout_marginTop="24dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
+                app:cardCornerRadius="@dimen/card_radius"
+                app:cardBackgroundColor="?attr/colorSurface"
+                app:cardElevation="@dimen/card_elevation">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:padding="16dp"
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@android:drawable/ic_menu_info_details"
-                        app:tint="@color/secondary"
-                        android:layout_marginEnd="12dp" />
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_dash_profile"
+                        app:tint="?attr/colorSecondary"
+                        android:layout_marginEnd="16dp"
+                        android:importantForAccessibility="no" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/title_profile"
-                        android:textColor="@color/text_primary"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_profile"
+                            android:textColor="?android:attr/textColorPrimary"
+                            android:textAppearance="?attr/textAppearanceTitleMedium"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Manage your details"
+                            android:textColor="?android:attr/textColorSecondary"
+                            android:textAppearance="?attr/textAppearanceBodySmall"
+                            android:layout_marginTop="2dp" />
+                    </LinearLayout>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
     </ScrollView>

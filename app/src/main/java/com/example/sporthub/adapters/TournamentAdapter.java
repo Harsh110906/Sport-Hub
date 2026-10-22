@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.example.sporthub.R;
 import com.example.sporthub.models.Tournament;
@@ -37,7 +38,33 @@ public class TournamentAdapter extends ArrayAdapter<Tournament> {
         if (tournament != null) {
             tvName.setText(tournament.getName());
             tvSport.setText(tournament.getSport());
-            tvStatus.setText(tournament.getStatus());
+            
+            String status = tournament.getStatus() != null ? tournament.getStatus() : "Unknown";
+            tvStatus.setText(status);
+
+            int padStart = tvStatus.getPaddingStart();
+            int padTop = tvStatus.getPaddingTop();
+            int padEnd = tvStatus.getPaddingEnd();
+            int padBottom = tvStatus.getPaddingBottom();
+
+            if ("Completed".equalsIgnoreCase(status)) {
+                tvStatus.setBackgroundResource(R.drawable.bg_status_completed);
+                tvStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.status_text_completed));
+            } else if ("Ongoing".equalsIgnoreCase(status)) {
+                tvStatus.setBackgroundResource(R.drawable.bg_status_ongoing);
+                tvStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.status_text_ongoing));
+            } else if ("Upcoming".equalsIgnoreCase(status) || "Scheduled".equalsIgnoreCase(status)) {
+                tvStatus.setBackgroundResource(R.drawable.bg_status_scheduled);
+                tvStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.status_text_scheduled));
+            } else if ("Cancelled".equalsIgnoreCase(status)) {
+                tvStatus.setBackgroundResource(R.drawable.bg_status_cancelled);
+                tvStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.status_text_cancelled));
+            } else {
+                tvStatus.setBackgroundResource(R.drawable.bg_status_neutral);
+                tvStatus.setTextColor(ContextCompat.getColor(getContext(), R.color.text_on_primary));
+            }
+            
+            tvStatus.setPaddingRelative(padStart, padTop, padEnd, padBottom);
         }
 
         return convertView;

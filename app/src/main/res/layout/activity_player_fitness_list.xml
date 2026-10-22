@@ -3,27 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="?android:attr/colorBackground">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarPlayerFitness"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/primary"
+        android:background="?attr/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="Fitness Tracker"
-        app:titleTextColor="@color/white"
+        app:titleTextColor="?attr/colorOnPrimary"
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Analytics Summary Header -->
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardFitnessSummary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="2dp"
+        app:cardCornerRadius="@dimen/card_radius"
+        app:cardBackgroundColor="?attr/colorSurface"
+        app:cardElevation="@dimen/card_elevation"
         app:layout_constraintTop_toBottomOf="@id/toolbarPlayerFitness">
 
         <LinearLayout
@@ -44,15 +45,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0"
-                    android:textColor="@color/primary"
-                    android:textSize="24sp"
+                    android:textColor="?attr/colorPrimary"
+                    android:textAppearance="?attr/textAppearanceHeadlineMedium"
                     android:textStyle="bold" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Workouts"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="14sp" />
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:textAppearance="?attr/textAppearanceBodySmall" />
             </LinearLayout>
 
             <LinearLayout
@@ -66,15 +67,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0"
-                    android:textColor="@color/secondary"
-                    android:textSize="24sp"
+                    android:textColor="?attr/colorSecondary"
+                    android:textAppearance="?attr/textAppearanceHeadlineMedium"
                     android:textStyle="bold" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Minutes"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="14sp" />
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:textAppearance="?attr/textAppearanceBodySmall" />
             </LinearLayout>
 
             <LinearLayout
@@ -89,26 +90,30 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:textColor="@android:color/holo_orange_dark"
-                    android:textSize="24sp"
+                    android:textAppearance="?attr/textAppearanceHeadlineMedium"
                     android:textStyle="bold" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Calories"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="14sp" />
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:textAppearance="?attr/textAppearanceBodySmall" />
             </LinearLayout>
 
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
     <TextView
         android:id="@+id/tvFitnessEmptyState"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="No workouts tracked. Click + to add one."
-        android:textColor="@color/text_secondary"
-        android:textSize="16sp"
+        android:textColor="?android:attr/textColorSecondary"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:gravity="center"
+        app:drawableTopCompat="@drawable/ic_dash_fitness"
+        app:drawableTint="?attr/colorSecondary"
+        android:drawablePadding="8dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -122,6 +127,8 @@
         android:layout_marginTop="8dp"
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp"
+        android:paddingTop="8dp"
+        android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -134,9 +141,9 @@
         android:layout_margin="24dp"
         android:contentDescription="Add Fitness Record"
         android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="@color/secondary"
+        app:backgroundTint="?attr/colorSecondary"
+        app:tint="?attr/colorSurface"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:tint="@color/white" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

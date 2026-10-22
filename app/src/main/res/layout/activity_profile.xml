@@ -3,17 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="?android:attr/colorBackground">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarProfile"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/primary"
+        android:background="?attr/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="My Profile"
-        app:titleTextColor="@color/white"
+        app:titleTextColor="?attr/colorOnPrimary"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
@@ -28,89 +28,151 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
+                app:cardCornerRadius="@dimen/card_radius"
+                app:cardBackgroundColor="?attr/colorSurface"
+                app:cardElevation="@dimen/card_elevation">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:gravity="center_horizontal"
                     android:padding="24dp">
+
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/ic_dash_profile"
+                        app:tint="?attr/colorPrimary"
+                        android:importantForAccessibility="no"
+                        android:layout_marginBottom="16dp" />
 
                     <TextView
                         android:id="@+id/tvProfileName"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/primary"
-                        android:textSize="24sp"
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:textAppearance="?attr/textAppearanceHeadlineMedium"
                         android:textStyle="bold"
-                        android:layout_marginBottom="16dp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Email Address:"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/tvProfileEmail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/text_primary"
-                        android:textSize="18sp"
-                        android:layout_marginBottom="16dp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Account Role:"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/tvProfileRole"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/secondary"
-                        android:textColor="@color/white"
-                        android:paddingHorizontal="12dp"
-                        android:paddingVertical="4dp"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginBottom="16dp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Favorite Sport:"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/tvProfileFavSport"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/text_primary"
-                        android:textSize="18sp"
+                        android:textAlignment="center"
                         android:layout_marginBottom="24dp"/>
 
-                    <Button
-                        android:id="@+id/btnEditProfile"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@android:drawable/ic_dialog_email"
+                            app:tint="?android:attr/textColorSecondary"
+                            android:layout_marginEnd="16dp"
+                            android:importantForAccessibility="no" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Email Address"
+                                android:textColor="?android:attr/textColorSecondary"
+                                android:textAppearance="?attr/textAppearanceBodySmall" />
+                            <TextView
+                                android:id="@+id/tvProfileEmail"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="?android:attr/textColorPrimary"
+                                android:textAppearance="?attr/textAppearanceBodyLarge"
+                                android:textStyle="bold"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@android:drawable/ic_secure"
+                            app:tint="?android:attr/textColorSecondary"
+                            android:layout_marginEnd="16dp"
+                            android:importantForAccessibility="no" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Account Role"
+                                android:textColor="?android:attr/textColorSecondary"
+                                android:textAppearance="?attr/textAppearanceBodySmall" />
+                            <TextView
+                                android:id="@+id/tvProfileRole"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bg_status_neutral"
+                                android:textColor="?attr/colorOnPrimary"
+                                android:paddingHorizontal="12dp"
+                                android:paddingVertical="4dp"
+                                android:textAppearance="?attr/textAppearanceLabelSmall"
+                                android:textStyle="bold"
+                                android:layout_marginTop="4dp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="24dp">
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_dash_tournament"
+                            app:tint="?android:attr/textColorSecondary"
+                            android:layout_marginEnd="16dp"
+                            android:importantForAccessibility="no" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Favorite Sport"
+                                android:textColor="?android:attr/textColorSecondary"
+                                android:textAppearance="?attr/textAppearanceBodySmall" />
+                            <TextView
+                                android:id="@+id/tvProfileFavSport"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="?android:attr/textColorPrimary"
+                                android:textAppearance="?attr/textAppearanceBodyLarge"
+                                android:textStyle="bold"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnEditProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
                         android:text="Edit Profile"
-                        android:backgroundTint="@color/primary"
-                        android:textColor="@color/white"
-                        android:padding="12dp" />
+                        app:cornerRadius="@dimen/card_radius" />
 
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

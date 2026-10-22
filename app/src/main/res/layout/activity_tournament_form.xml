@@ -4,139 +4,169 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/background">
+    android:background="?android:attr/colorBackground">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarForm"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/primary"
+        android:background="?attr/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:titleTextColor="@color/white" />
+        app:titleTextColor="?attr/colorOnPrimary" />
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="24dp">
 
-            <EditText
-                android:id="@+id/etName"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilName"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Tournament Name *"
-                android:background="@android:drawable/edit_text"
-                android:padding="12dp"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginBottom="16dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/etSport"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilSport"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Sport *"
-                android:background="@android:drawable/edit_text"
-                android:padding="12dp"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginBottom="16dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etSport"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/etVenue"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilVenue"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Venue"
-                android:background="@android:drawable/edit_text"
-                android:padding="12dp"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginBottom="16dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etVenue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/etOrganizer"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilOrganizer"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Organizer"
-                android:background="@android:drawable/edit_text"
-                android:padding="12dp"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginBottom="16dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etOrganizer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/etMaxTeams"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilMaxTeams"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Max Teams (Must be positive) *"
-                android:inputType="number"
-                android:background="@android:drawable/edit_text"
-                android:padding="12dp"
-                android:layout_marginBottom="12dp" />
+                android:hint="Max Teams Capacity *"
+                android:layout_marginBottom="16dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etMaxTeams"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Dates -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="12dp">
+                android:layout_marginBottom="16dp">
 
-                <TextView
-                    android:id="@+id/tvStartDate"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilStartDate"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="Start Date (YYYY-MM-DD) *"
-                    android:padding="12dp"
-                    android:background="@android:drawable/edit_text"
-                    android:clickable="true"
-                    android:focusable="false"
-                    android:layout_marginEnd="4dp"/>
+                    android:hint="Start Date *"
+                    android:layout_marginEnd="8dp">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tvStartDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:clickable="true" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <TextView
-                    android:id="@+id/tvEndDate"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilEndDate"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="End Date (YYYY-MM-DD) *"
-                    android:padding="12dp"
-                    android:background="@android:drawable/edit_text"
-                    android:clickable="true"
-                    android:focusable="false"
-                    android:layout_marginStart="4dp"/>
+                    android:hint="End Date *"
+                    android:layout_marginStart="8dp">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tvEndDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:clickable="true" />
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Status:"
-                android:textColor="@color/text_primary"
+                android:text="Status *"
+                android:textColor="?android:attr/textColorSecondary"
                 android:layout_marginBottom="4dp"/>
 
             <Spinner
                 android:id="@+id/spnStatus"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:drawable/btn_dropdown"
-                android:layout_marginBottom="24dp"/>
+                android:layout_height="48dp"
+                android:layout_marginBottom="32dp" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSave"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Save Tournament"
-                android:backgroundTint="@color/primary"
-                android:textColor="@color/white"
-                android:padding="12dp"
-                android:layout_marginBottom="12dp"/>
+                android:layout_height="60dp"
+                android:text="Save"
+                app:cornerRadius="@dimen/card_radius"
+                android:layout_marginBottom="8dp" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnDelete"
+                style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Delete Tournament"
-                android:backgroundTint="@android:color/holo_red_dark"
-                android:textColor="@color/white"
-                android:padding="12dp"
-                android:visibility="gone"/>
+                android:layout_height="60dp"
+                android:text="Delete"
+                android:textColor="?attr/colorError"
+                app:strokeColor="?attr/colorError"
+                app:cornerRadius="@dimen/card_radius"
+                android:visibility="gone" />
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>

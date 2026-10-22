@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base Colors -->
+    <color name="primary">#90CAF9</color>
+    <color name="primary_dark">#42A5F5</color>
+    <color name="secondary">#FFCA28</color>
+    <color name="background">#121212</color>
+    <color name="surface">#1E1E1E</color>
+    <color name="error">#CF6679</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">#E0E0E0</color>
+    <color name="text_secondary">#A0A0A0</color>
+    <color name="text_on_primary">#000000</color>
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Status Chip Colors -->
+    <color name="status_bg_scheduled">#002171</color>
+    <color name="status_text_scheduled">#90CAF9</color>
+    <color name="status_bg_ongoing">#422B00</color>
+    <color name="status_text_ongoing">#FFCA28</color>
+    <color name="status_bg_completed">#1B5E20</color>
+    <color name="status_text_completed">#A5D6A7</color>
+    <color name="status_bg_cancelled">#B71C1C</color>
+    <color name="status_text_cancelled">#EF9A9A</color>
+</resources>

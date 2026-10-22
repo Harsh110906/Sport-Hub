@@ -3,17 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="?android:attr/colorBackground">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarAdminMatches"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/primary"
+        android:background="?attr/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="Schedule Matches"
-        app:titleTextColor="@color/white"
+        app:titleTextColor="?attr/colorOnPrimary"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
@@ -21,9 +21,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="8dp"
-        android:background="@color/white"
-        android:elevation="2dp"
+        android:padding="16dp"
+        android:background="?attr/colorSurface"
+        android:elevation="4dp"
         app:layout_constraintTop_toBottomOf="@id/toolbarAdminMatches">
 
         <LinearLayout
@@ -35,17 +35,15 @@
             <Spinner
                 android:id="@+id/spnAdminTournamentFilter"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="1"
-                android:background="@android:drawable/btn_dropdown"
                 android:layout_marginEnd="4dp" />
 
             <Spinner
                 android:id="@+id/spnAdminStatusFilter"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="1"
-                android:background="@android:drawable/btn_dropdown"
                 android:layout_marginStart="4dp" />
         </LinearLayout>
 
@@ -58,22 +56,17 @@
             <Spinner
                 android:id="@+id/spnAdminSortMatches"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="1"
-                android:background="@android:drawable/btn_dropdown"
                 android:layout_marginEnd="8dp"/>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAdminClearFilters"
+                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Clear"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="8dp"
-                android:backgroundTint="@color/text_secondary"
-                android:textColor="@color/white" />
+                android:textColor="?attr/colorSecondary" />
         </LinearLayout>
     </LinearLayout>
 
@@ -82,8 +75,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="No matches found. Click + to schedule one."
-        android:textColor="@color/text_secondary"
-        android:textSize="16sp"
+        android:textColor="?android:attr/textColorSecondary"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:gravity="center"
+        app:drawableTopCompat="@drawable/ic_dash_match"
+        app:drawableTint="?attr/colorSecondary"
+        android:drawablePadding="8dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -96,6 +93,8 @@
         android:layout_height="0dp"
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp"
+        android:paddingTop="8dp"
+        android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -108,9 +107,9 @@
         android:layout_margin="24dp"
         android:contentDescription="Add Match"
         android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="@color/secondary"
+        app:backgroundTint="?attr/colorSecondary"
+        app:tint="?attr/colorSurface"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:tint="@color/white" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

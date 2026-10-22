@@ -4,17 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/background">
+    android:background="?android:attr/colorBackground">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarDetail"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/primary"
+        android:background="?attr/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:title="Tournament Info"
-        app:titleTextColor="@color/white" />
+        app:titleTextColor="?attr/colorOnPrimary" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -26,12 +26,13 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
+                app:cardCornerRadius="@dimen/card_radius"
+                app:cardBackgroundColor="?attr/colorSurface"
+                app:cardElevation="@dimen/card_elevation">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -43,8 +44,8 @@
                         android:id="@+id/tvDetName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/primary_dark"
-                        android:textSize="26sp"
+                        android:textColor="?attr/colorPrimary"
+                        android:textAppearance="?attr/textAppearanceHeadlineMedium"
                         android:textStyle="bold"
                         android:layout_marginBottom="8dp"/>
 
@@ -52,12 +53,13 @@
                         android:id="@+id/tvDetStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@color/secondary"
-                        android:textColor="@color/white"
+                        android:background="@drawable/bg_status_neutral"
+                        android:textColor="?attr/colorOnPrimary"
                         android:paddingHorizontal="12dp"
                         android:paddingVertical="6dp"
-                        android:textSize="14sp"
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
                         android:textStyle="bold"
+                        android:textAllCaps="true"
                         android:layout_marginBottom="16dp"/>
 
                     <View
@@ -75,8 +77,8 @@
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@android:drawable/ic_menu_sort_by_size"
-                            app:tint="@color/text_secondary"
+                            android:src="@drawable/ic_dash_tournament"
+                            app:tint="?android:attr/textColorSecondary"
                             android:layout_marginEnd="16dp"
                             android:importantForAccessibility="no" />
                         <LinearLayout
@@ -87,14 +89,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Sport"
-                                android:textSize="12sp"
-                                android:textColor="@color/text_secondary"/>
+                                android:textAppearance="?attr/textAppearanceBodySmall"
+                                android:textColor="?android:attr/textColorSecondary"/>
                             <TextView
                                 android:id="@+id/tvDetSport"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/text_primary"
-                                android:textSize="16sp"
+                                android:textColor="?android:attr/textColorPrimary"
+                                android:textAppearance="?attr/textAppearanceBodyLarge"
                                 android:textStyle="bold"/>
                         </LinearLayout>
                     </LinearLayout>
@@ -109,7 +111,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@android:drawable/ic_menu_today"
-                            app:tint="@color/text_secondary"
+                            app:tint="?android:attr/textColorSecondary"
                             android:layout_marginEnd="16dp"
                             android:importantForAccessibility="no" />
                         <LinearLayout
@@ -120,14 +122,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Dates"
-                                android:textSize="12sp"
-                                android:textColor="@color/text_secondary"/>
+                                android:textAppearance="?attr/textAppearanceBodySmall"
+                                android:textColor="?android:attr/textColorSecondary"/>
                             <TextView
                                 android:id="@+id/tvDetDates"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/text_primary"
-                                android:textSize="16sp"
+                                android:textColor="?android:attr/textColorPrimary"
+                                android:textAppearance="?attr/textAppearanceBodyLarge"
                                 android:textStyle="bold"/>
                         </LinearLayout>
                     </LinearLayout>
@@ -142,7 +144,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@android:drawable/ic_menu_mylocation"
-                            app:tint="@color/text_secondary"
+                            app:tint="?android:attr/textColorSecondary"
                             android:layout_marginEnd="16dp"
                             android:importantForAccessibility="no" />
                         <LinearLayout
@@ -153,14 +155,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Venue"
-                                android:textSize="12sp"
-                                android:textColor="@color/text_secondary"/>
+                                android:textAppearance="?attr/textAppearanceBodySmall"
+                                android:textColor="?android:attr/textColorSecondary"/>
                             <TextView
                                 android:id="@+id/tvDetVenue"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/text_primary"
-                                android:textSize="16sp"
+                                android:textColor="?android:attr/textColorPrimary"
+                                android:textAppearance="?attr/textAppearanceBodyLarge"
                                 android:textStyle="bold"/>
                         </LinearLayout>
                     </LinearLayout>
@@ -175,7 +177,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@android:drawable/ic_menu_info_details"
-                            app:tint="@color/text_secondary"
+                            app:tint="?android:attr/textColorSecondary"
                             android:layout_marginEnd="16dp"
                             android:importantForAccessibility="no" />
                         <LinearLayout
@@ -186,14 +188,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Organizer"
-                                android:textSize="12sp"
-                                android:textColor="@color/text_secondary"/>
+                                android:textAppearance="?attr/textAppearanceBodySmall"
+                                android:textColor="?android:attr/textColorSecondary"/>
                             <TextView
                                 android:id="@+id/tvDetOrganizer"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/text_primary"
-                                android:textSize="16sp"
+                                android:textColor="?android:attr/textColorPrimary"
+                                android:textAppearance="?attr/textAppearanceBodyLarge"
                                 android:textStyle="bold"/>
                         </LinearLayout>
                     </LinearLayout>
@@ -206,8 +208,8 @@
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@android:drawable/ic_menu_myplaces"
-                            app:tint="@color/text_secondary"
+                            android:src="@drawable/ic_dash_team"
+                            app:tint="?android:attr/textColorSecondary"
                             android:layout_marginEnd="16dp"
                             android:importantForAccessibility="no" />
                         <LinearLayout
@@ -218,31 +220,27 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Capacity"
-                                android:textSize="12sp"
-                                android:textColor="@color/text_secondary"/>
+                                android:textAppearance="?attr/textAppearanceBodySmall"
+                                android:textColor="?android:attr/textColorSecondary"/>
                             <TextView
                                 android:id="@+id/tvDetMaxTeams"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/text_primary"
-                                android:textSize="16sp"
+                                android:textColor="?android:attr/textColorPrimary"
+                                android:textAppearance="?attr/textAppearanceBodyLarge"
                                 android:textStyle="bold"/>
                         </LinearLayout>
                     </LinearLayout>
 
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnRegister"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:text="Register"
-                android:backgroundTint="@color/primary"
-                android:textColor="@color/white"
-                android:padding="14dp"
-                android:textSize="16sp"
-                android:textStyle="bold"
+                app:cornerRadius="@dimen/card_radius"
                 android:visibility="gone" />
 
         </LinearLayout>

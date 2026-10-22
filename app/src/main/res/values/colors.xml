@@ -1,11 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="primary">#1E88E5</color>      <!-- Sports Blue -->
-    <color name="primary_dark">#1565C0</color>
-    <color name="secondary">#FFB300</color>    <!-- Action Orange/Amber -->
-    <color name="background">#F5F5F5</color>
+    <!-- Base Colors -->
+    <color name="primary">#0D47A1</color>
+    <color name="primary_dark">#002171</color>
+    <color name="secondary">#FF8F00</color>
+    <color name="background">#F5F6FA</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="error">#B00020</color>
+
+    <!-- Text Colors -->
     <color name="text_primary">#212121</color>
     <color name="text_secondary">#757575</color>
+    <color name="text_on_primary">#FFFFFF</color>
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Status Chip Colors -->
+    <color name="status_bg_scheduled">#E3F2FD</color>
+    <color name="status_text_scheduled">#1565C0</color>
+    <color name="status_bg_ongoing">#FFF8E1</color>
+    <color name="status_text_ongoing">#FF8F00</color>
+    <color name="status_bg_completed">#E8F5E9</color>
+    <color name="status_text_completed">#2E7D32</color>
+    <color name="status_bg_cancelled">#FFEBEE</color>
+    <color name="status_text_cancelled">#C62828</color>
 </resources>
